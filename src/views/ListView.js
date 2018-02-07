@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import ItemsService from '../services/ItemsService';
+import ItemsService from '../services/MovieService';
 
 import List from './../components/List';
 
