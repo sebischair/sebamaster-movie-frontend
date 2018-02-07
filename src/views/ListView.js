@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import ItemsService from '../services/MovieService';
+import MovieService from '../services/MovieService';
 
 import List from './../components/List';
 
@@ -21,7 +21,7 @@ export default class ListView extends React.Component {
     componentWillMount() {
         this.setState({ loading: true });
 
-        ItemsService.getItems().then((data) => {
+        MovieService.getMovies().then((data) => {
                 this.setState({
                     data: [...data],
                     loading: false
