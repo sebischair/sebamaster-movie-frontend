@@ -3,8 +3,9 @@
 import React from 'react';
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 
-import ListView    from './views/ListView';
-import ItemView    from './views/ItemView';
+import MovieListView    from './views/MovieListView';
+import MovieDetailView    from './views/MovieDetailView';
+import MovieEditAddView    from './views/MovieEditAddView';
 
 
 export default class App extends React.Component {
@@ -15,8 +16,10 @@ export default class App extends React.Component {
         this.state = {
             title: 'Master/Detail Example in React',
             routes: [
-                { component: ListView , path: '/', exact: true },
-                { component: ItemView , path: '/:id'},
+                { component: MovieListView , path: '/', exact: true },
+                { component: MovieDetailView , path: '/show/:id'},
+                { component: MovieEditAddView , path: '/edit/:id'},
+                { component: MovieEditAddView , path: '/add'}
             ]
         };
 
