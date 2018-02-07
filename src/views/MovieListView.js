@@ -3,10 +3,10 @@
 import React from 'react';
 
 import MovieService from '../services/MovieService';
-import MovieList from './../components/MovieList';
+import {MovieList} from './../components/MovieList';
 
 
-export default class ListView extends React.Component {
+export class MovieListView extends React.Component {
 
     constructor(props) {
         super(props);
@@ -22,15 +22,14 @@ export default class ListView extends React.Component {
             loading: true
         });
 
-        MovieService.getMovies().then((data) => {
+        MovieService.getMovies().then((resp) => {
             this.setState({
-                data: [...data],
+                data: [...resp.data],
                 loading: false
             });
         });
 
     }
-
 
     render() {
         if (this.state.loading) {

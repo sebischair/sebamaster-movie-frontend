@@ -9,8 +9,8 @@ export default class MovieService {
 
     static getMovies(){
        return new Promise((resolve, reject) => {
-           MoviesAPISimulator.getMoviesAsync().then((data) => {
-              resolve(data);
+           MoviesAPISimulator.getMoviesAsync().then((resp) => {
+              resolve(resp);
            }).catch((e) => {
                console.log(e);
                reject(e);
@@ -20,8 +20,8 @@ export default class MovieService {
 
     static getMovie(id) {
         return new Promise((resolve, reject) => {
-            MoviesAPISimulator.getMoviesAsync().then((data) => {
-                let movies = data.filter(item => item.id.toString() == id)
+            MoviesAPISimulator.getMoviesAsync().then((resp) => {
+                let movies = resp.data.filter(item => item.id.toString() == id)
                 if (movies.length < 1) {
                     reject(new Error(`The movie with id ${id} was not found`));
                 } else {

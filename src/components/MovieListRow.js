@@ -6,13 +6,11 @@ import FaTrash from 'react-icons/lib/fa/trash'
 import FaEdit from 'react-icons/lib/fa/edit'
 
 
-export default class MovieListRow extends React.Component {
+export class MovieListRow extends React.Component {
 
     constructor(props) {
         super(props);
     }
-
-
 
     render() {
         return (
