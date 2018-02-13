@@ -2,10 +2,10 @@
 
 import React from 'react';
 import MovieService from '../services/MovieService';
-import {MovieDetail} from './../components/MovieDetail';
+import {MovieForm} from './../components/MovieForm';
 
 
-export class MovieDetailView extends React.Component {
+export class MovieFormView extends React.Component {
 
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ export class MovieDetailView extends React.Component {
             loading: true
         });
 
-        let id = this.props.match.params.id
+        let id = this.props.match.params.id;
 
         MovieService.getMovie(id).then((resp) => {
             this.setState({
@@ -32,6 +32,6 @@ export class MovieDetailView extends React.Component {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieDetail movie={this.state.movie} />);
+        return (<MovieForm movie={this.state.movie} />);
     }
 }

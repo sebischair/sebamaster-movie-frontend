@@ -3,13 +3,7 @@
 import React from 'react';
 import {MovieListRow} from './MovieListRow';
 import Page from './Page'
-import {
-    DataTable,
-    TableHeader,
-    TableBody,
-    TableRow,
-    TableColumn,
-} from 'react-md';
+import { DataTable, TableHeader, TableBody, TableRow, TableColumn } from 'react-md';
 
 export const MovieList = ({data}) => (
     <Page>
@@ -28,3 +22,4 @@ export const MovieList = ({data}) => (
         </DataTable>
     </Page>
 );
+
