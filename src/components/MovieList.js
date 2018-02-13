@@ -3,21 +3,28 @@
 import React from 'react';
 import {MovieListRow} from './MovieListRow';
 import Page from './Page'
+import {
+    DataTable,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableColumn,
+} from 'react-md';
 
 export const MovieList = ({data}) => (
     <Page>
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
-                </tr>
-            </thead>
-            <tbody>
+        <DataTable plain>
+            <TableHeader>
+                <TableRow>
+                    <TableColumn></TableColumn>
+                    <TableColumn>Name</TableColumn>
+                    <TableColumn>Edit</TableColumn>
+                    <TableColumn>Remove</TableColumn>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
                 {data.map((movie, i) => <MovieListRow key={i} movie={movie} />)}
-            </tbody>
-        </table>
+            </TableBody>
+        </DataTable>
     </Page>
 );
