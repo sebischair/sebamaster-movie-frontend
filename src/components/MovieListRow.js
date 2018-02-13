@@ -4,7 +4,8 @@ import React from 'react';
 import FaFile from 'react-icons/lib/fa/file'
 import FaTrash from 'react-icons/lib/fa/trash'
 import FaEdit from 'react-icons/lib/fa/edit'
-
+import { Link } from 'react-router-dom'
+import { ListItem, Button } from 'react-md';
 
 export class MovieListRow extends React.Component {
 
@@ -14,12 +15,17 @@ export class MovieListRow extends React.Component {
 
     render() {
         return (
-            <tr>
+            /*<tr>
                 <td><FaFile /></td>
-                <td>{this.props.movie.title}</td>
+                <td></td>
                 <td><FaEdit /></td>
                 <td><FaTrash /></td>
-            </tr>
-        );
+            </tr>*/
+                <ListItem
+                    leftNode={<FaFile />}
+                    rightIcon={<FaEdit /><FaTrash />}
+                    primaryText={<Link to={`/show/${this.props.movie.id}`}>{this.props.movie.title}</Link>}
+                />
+        )
     }
 }

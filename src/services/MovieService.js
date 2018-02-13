@@ -21,7 +21,7 @@ export default class MovieService {
     static getMovie(id) {
         return new Promise((resolve, reject) => {
             MoviesAPISimulator.getMoviesAsync().then((resp) => {
-                let movies = resp.data.filter(item => item.id.toString() == id)
+                let movies = resp.data.filter(item => item.id == id)
                 if (movies.length < 1) {
                     reject(new Error(`The movie with id ${id} was not found`));
                 } else {
