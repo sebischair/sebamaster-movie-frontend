@@ -73,7 +73,7 @@ export class MovieForm extends React.Component {
                         label="Rating"
                         type="text"
                         className="md-row"
-                        required={true}
+                        required={false}
                         value={this.state.rating}
                         onChange={this.handleChangeRating}/>
                     <TextField

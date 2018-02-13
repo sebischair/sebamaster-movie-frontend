@@ -16,7 +16,7 @@ export class MovieDetailView extends React.Component {
             loading: true
         });
 
-        let id = this.props.match.params.id
+        let id = this.props.match.params.id;
 
         MovieService.getMovie(id).then((resp) => {
             this.setState({

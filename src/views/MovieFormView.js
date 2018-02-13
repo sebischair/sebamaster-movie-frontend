@@ -12,19 +12,25 @@ export class MovieFormView extends React.Component {
     }
 
     componentWillMount(props){
-        this.setState({
-            loading: true
-        });
-
-        let id = this.props.match.params.id;
-
-        MovieService.getMovie(id).then((resp) => {
+        if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.movie != undefined) {
             this.setState({
-                movie: resp,
-                loading: false
+                loading: false,
+                movie: this.props.location.state.movie
             });
-        });
+        } else {
+            this.setState({
+                loading: true
+            });
 
+            let id = this.props.match.params.id;
+
+            MovieService.getMovie(id).then((resp) => {
+                this.setState({
+                    movie: resp,
+                    loading: false
+                });
+            });
+        }
     }
 
     render() {
