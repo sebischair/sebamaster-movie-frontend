@@ -30,7 +30,7 @@ export class MovieDetail extends React.Component {
 
                     </Cell>
                     <Cell size={1}>
-                        <Button icon>delete</Button>
+                        <Button onClick={() => this.props.onDelete(this.props.movie.id)} icon>delete</Button>
                     </Cell>
                 </Grid>
 
@@ -45,12 +45,6 @@ export class MovieDetail extends React.Component {
                     </p>
                 </CardText>
             </Card>
-
-
-
-
-
-
         );
     }
 }

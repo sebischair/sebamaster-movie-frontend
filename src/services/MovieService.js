@@ -20,13 +20,23 @@ export default class MovieService {
 
     static getMovie(id) {
         return new Promise((resolve, reject) => {
-            MoviesAPISimulator.getMoviesAsync().then((resp) => {
-                let movies = resp.data.filter(item => item.id == id)
-                if (movies.length < 1) {
-                    reject(new Error(`The movie with id ${id} was not found`));
+            MoviesAPISimulator.getMovieByIdAsync(id).then((resp) => {
+                if(resp.data != undefined && Object.keys(resp.data).length !== 0) {
+                    resolve(resp.data);
                 } else {
-                    resolve(movies[0]);
+                    reject(new Error(`The movie with id ${id} was not found`));
                 }
+            }).catch((e) => {
+                console.log(e);
+                reject(e);
+            });
+        });
+    }
+
+    static deleteMovie(id) {
+        return new Promise((resolve, reject) => {
+            MoviesAPISimulator.deleteMovie(id).then((resp) => {
+                resolve(resp.status);
             }).catch((e) => {
                 console.log(e);
                 reject(e);

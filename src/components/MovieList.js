@@ -5,7 +5,7 @@ import {MovieListRow} from './MovieListRow';
 import Page from './Page'
 import { DataTable, TableHeader, TableBody, TableRow, TableColumn } from 'react-md';
 
-export const MovieList = ({data}) => (
+export const MovieList = ({data, onDelete}) => (
     <Page>
         <DataTable plain>
             <TableHeader>
@@ -17,7 +17,7 @@ export const MovieList = ({data}) => (
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map((movie, i) => <MovieListRow key={i} movie={movie} />)}
+                {data.map((movie, i) => <MovieListRow key={i} movie={movie} onDelete={(id) => onDelete(id)} />)}
             </TableBody>
         </DataTable>
     </Page>

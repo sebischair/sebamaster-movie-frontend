@@ -27,11 +27,19 @@ export class MovieDetailView extends React.Component {
 
     }
 
+    deleteMovie(id) {
+        MovieService.deleteMovie(id).then((resp) => {
+            this.props.history.push('/');
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
+
     render() {
         if (this.state.loading) {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieDetail movie={this.state.movie} />);
+        return (<MovieDetail movie={this.state.movie} onDelete={(id) => this.deleteMovie(id)}/>);
     }
 }

@@ -1015,6 +1015,7 @@ export default class MoviesAPISimulator {
 
 
     static getMovieByIdAsync (id) {
+        console.log(id);
         return new Promise((resolve, reject) => {
             // We call resolve(...) when what we were doing made async successful, and reject(...) when it failed.
             // In this example, we use setTimeout(...) to simulate async code.
@@ -1022,7 +1023,7 @@ export default class MoviesAPISimulator {
             setTimeout(function(){
 
                 let movie = {};
-                let movieIndex = movies.map(movie => movie['_id']).indexOf(id);
+                let movieIndex = movies.map(movie => movie['id']).indexOf(id);
                 if (movieIndex > -1) movie = movies[movieIndex];
 
                 let response = { data: Object.assign({},movie)};
@@ -1051,13 +1052,14 @@ export default class MoviesAPISimulator {
     };
 
     static deleteMovie (id) {
+        console.log(id);
         return new Promise((resolve, reject) => {
             // We call resolve(...) when what we were doing made async successful, and reject(...) when it failed.
             // In this example, we use setTimeout(...) to simulate async code.
             // In reality, you will probably be using something like XHR or an HTML5 API.
             setTimeout(function(){
 
-                let movieIndex = movies.map(movie => movie['_id']).indexOf(id);
+                let movieIndex = movies.map(movie => movie['id']).indexOf(id);
                 movies.splice(movieIndex,1); //Mutation
 
 
@@ -1075,7 +1077,7 @@ export default class MoviesAPISimulator {
             // In reality, you will probably be using something like XHR or an HTML5 API.
             setTimeout(function(){
 
-                let movieIndex = movies.map(_movie => _movie['_id']).indexOf(movie['_id']);
+                let movieIndex = movies.map(_movie => _movie['id']).indexOf(movie['id']);
                 movies[movieIndex] =  Object.assign({},movies[movieIndex], movie);
 
                 let response = { data: movies[movieIndex] };
