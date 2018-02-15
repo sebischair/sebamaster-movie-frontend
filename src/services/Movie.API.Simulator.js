@@ -1006,7 +1006,7 @@ export default class MoviesAPISimulator {
             // In this example, we use setTimeout(...) to simulate async code.
             // In reality, you will probably be using something like XHR or an HTML5 API.
             setTimeout(function(){
-                let response = { data: [...movies] };
+                let response = { data: movies.map((movie) => { return {id: movie.id, title: movie.title}}) };
                 resolve(response); // Yay! Everything went well!
             }, 250);
     });
