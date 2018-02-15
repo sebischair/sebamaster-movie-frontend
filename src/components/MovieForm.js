@@ -27,28 +27,36 @@ export class MovieForm extends React.Component {
         this.handleAbort = this.handleAbort.bind(this);
     }
 
-    handleChangeTitle(event) {
-        this.setState({title: event.target.value});
+    handleChangeTitle(value) {
+        this.setState({title: value});
     }
 
-    handleChangeYear(event) {
-        this.setState({year: event.target.value});
+    handleChangeYear(value) {
+        this.setState({year: value});
     }
 
-    handleChangeRating(event) {
-        this.setState({rating: event.target.value});
+    handleChangeRating(value) {
+        this.setState({rating: value});
     }
 
-    handleChangeSynopsis(event) {
-        this.setState({synopsis: event.target.value});
+    handleChangeSynopsis(value) {
+        this.setState({synopsis: value});
     }
 
     handleSubmit(event) {
+        event.preventDefault()
 
+        let movie = this.props.movie;
+        movie.title = this.state.title;
+        movie.mpaa_rating = this.state.rating;
+        movie.year = this.state.year;
+        movie.synopsis = this.state.synopsis;
+
+        this.props.onSubmit(movie);
     }
 
     handleAbort(event) {
-
+        this.props.onAbort(this.props.movie.id);
     }
 
     render() {
@@ -57,6 +65,7 @@ export class MovieForm extends React.Component {
                 <form className="md-grid" onSubmit={this.handleSubmit} onReset={this.handleAbort}>
                     <TextField
                         label="Title"
+                        id="TitleField"
                         type="text"
                         className="md-row"
                         required={true}
@@ -64,6 +73,7 @@ export class MovieForm extends React.Component {
                         onChange={this.handleChangeTitle}/>
                     <TextField
                         label="Year"
+                        id="YearField"
                         type="number"
                         className="md-row"
                         required={true}
@@ -71,6 +81,7 @@ export class MovieForm extends React.Component {
                         onChange={this.handleChangeYear}/>
                     <TextField
                         label="Rating"
+                        id="RatingField"
                         type="text"
                         className="md-row"
                         required={false}
@@ -78,6 +89,7 @@ export class MovieForm extends React.Component {
                         onChange={this.handleChangeRating}/>
                     <TextField
                         label="Synopsis"
+                        id="SynopsisField"
                         type="text"
                         className="md-row"
                         rows={5}
@@ -86,7 +98,7 @@ export class MovieForm extends React.Component {
                         onChange={this.handleChangeSynopsis}/>
 
                     <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Save</Button>
-                    <Button id="submit" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                    <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
                 </form>
             </Card>
         );

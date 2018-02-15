@@ -33,11 +33,32 @@ export class MovieFormView extends React.Component {
         }
     }
 
+    goBack(id) {
+        console.log(this.props.location);
+        if(this.props.location.state != undefined && this.props.location.state.fromList) {
+            this.props.history.push('/');
+        } else {
+            this.props.history.push(`/show/${id}`)
+        }
+    }
+
+    updateMovie(movie) {
+        MovieService.updateMovie(movie).then((resp) => {
+            if(this.props.location.state != undefined && this.props.location.state.fromList) {
+                this.props.history.push('/');
+            } else {
+                this.props.history.push(`/show/${movie.id}`)
+            }
+        }).catch((e) => {
+           console.log(e);
+        });
+    }
+
     render() {
         if (this.state.loading) {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieForm movie={this.state.movie} />);
+        return (<MovieForm movie={this.state.movie} onAbort={(id) => this.goBack(id)} onSubmit={(movie) => this.updateMovie(movie)} />);
     }
 }

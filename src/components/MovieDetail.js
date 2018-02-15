@@ -24,10 +24,12 @@ export class MovieDetail extends React.Component {
                             <img src={this.props.movie.posters.detailed} alt={this.props.movie.title} />
                         </Media>
                     </Cell>
-                    <Cell size={7}/>
+                    <Cell size={6}/>
+                    <Cell size={1}>
+                        <Link to={'/'}><Button icon>keyboard_arrow_left</Button></Link>
+                    </Cell>
                     <Cell size={1}>
                         <Link to={{pathname: `/edit/${this.props.movie.id}`, state : {movie : this.props.movie}}}><Button icon>mode_edit</Button></Link>
-
                     </Cell>
                     <Cell size={1}>
                         <Button onClick={() => this.props.onDelete(this.props.movie.id)} icon>delete</Button>

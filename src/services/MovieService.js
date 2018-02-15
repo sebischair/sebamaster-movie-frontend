@@ -43,4 +43,20 @@ export default class MovieService {
             });
         });
     }
+
+    static updateMovie(movie) {
+        return new Promise((resolve, reject) => {
+            MoviesAPISimulator.updateMovie(movie).then((resp) => {
+                if(resp.data != undefined) {
+                    resolve(resp.data);
+                }
+                else {
+                    reject(new Error(`Error while updating movie with id ${movie.id}`));
+                }
+            }).catch((e) => {
+                console.log(e);
+                reject(e);
+            });
+        });
+    }
 }
