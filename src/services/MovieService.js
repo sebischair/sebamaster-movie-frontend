@@ -1,61 +1,73 @@
 "use strict";
 
-import MoviesAPISimulator from "./Movie.API.Simulator";
+import $ from 'jquery';
 
 export default class MovieService {
     constructor(){
-
     }
+
+    static baseURL() {return "http://localhost:3000/api/movies"; }
 
     static getMovies(){
        return new Promise((resolve, reject) => {
-           MoviesAPISimulator.getMoviesAsync().then((resp) => {
-              resolve(resp);
-           }).catch((e) => {
-               console.log(e);
-               reject(e);
+           $.get({
+               url: MovieService.baseURL(),
+               type: 'GET',
+               success: function (data) {
+                   resolve({data: data});
+               }
            });
        });
     }
 
     static getMovie(id) {
         return new Promise((resolve, reject) => {
-            MoviesAPISimulator.getMovieByIdAsync(id).then((resp) => {
-                if(resp.data != undefined && Object.keys(resp.data).length !== 0) {
-                    resolve(resp.data);
-                } else {
-                    reject(new Error(`The movie with id ${id} was not found`));
+            $.ajax({
+                url: MovieService.baseURL() + `/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    if (data != undefined || Object.keys(data).length !== 0) {
+                        resolve(data);
+                    }
+                    else {
+                        reject(new Error(`The movie with id ${id} was not found`));
+                    }
                 }
-            }).catch((e) => {
-                console.log(e);
-                reject(e);
             });
         });
     }
 
     static deleteMovie(id) {
         return new Promise((resolve, reject) => {
-            MoviesAPISimulator.deleteMovie(id).then((resp) => {
-                resolve(resp.status);
-            }).catch((e) => {
-                console.log(e);
-                reject(e);
+            $.ajax({
+                url: MovieService.baseURL() + `/${id}`,
+                type: 'DELETE',
+                success: function (data) {
+                    if(data == 'OK') {
+                        resolve(200);
+                    } else {
+                        reject('Error while deleting');
+                    }
+                }
             });
         });
     }
 
     static updateMovie(movie) {
         return new Promise((resolve, reject) => {
-            MoviesAPISimulator.updateMovie(movie).then((resp) => {
-                if(resp.data != undefined) {
-                    resolve(resp.data);
+            $.ajax({
+                url: MovieService.baseURL() + `/${movie._id}`,
+                type: 'PUT',
+                data: movie,
+                success: function(data) {
+                    console.log(data);
+                    if(data != undefined && Object.keys(data).length !== 0) {
+                        resolve(data);
+                    }
+                    else {
+                        reject(`Error while updating movie with id ${movie._id}`);
+                    }
                 }
-                else {
-                    reject(new Error(`Error while updating movie with id ${movie.id}`));
-                }
-            }).catch((e) => {
-                console.log(e);
-                reject(e);
             });
         });
     }
@@ -69,17 +81,19 @@ export default class MovieService {
             original: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg"
         };
         return new Promise((resolve, reject) => {
-           MoviesAPISimulator.createMovie(movie).then((resp) => {
-                if(resp.data != undefined) {
-                    resolve(resp.data);
+            $.ajax({
+                url: MovieService.baseURL(),
+                type: 'POST',
+                data: movie,
+                success: function(data) {
+                    if(data != undefined && Object.keys(data).length !== 0) {
+                        resolve(data);
+                    }
+                    else {
+                        reject('Error while creating movie');
+                    }
                 }
-                else {
-                    reject(new Error('Error while creating movie'));
-                }
-           }).catch((e) => {
-               console.log(e);
-               reject(e);
-           })
+            });
         });
     }
 }

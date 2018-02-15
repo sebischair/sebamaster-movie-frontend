@@ -29,10 +29,10 @@ export class MovieDetail extends React.Component {
                         <Link to={'/'}><Button icon>keyboard_arrow_left</Button></Link>
                     </Cell>
                     <Cell size={1}>
-                        <Link to={{pathname: `/edit/${this.props.movie.id}`, state : {movie : this.props.movie}}}><Button icon>mode_edit</Button></Link>
+                        <Link to={{pathname: `/edit/${this.props.movie._id}`, state : {movie : this.props.movie}}}><Button icon>mode_edit</Button></Link>
                     </Cell>
                     <Cell size={1}>
-                        <Button onClick={() => this.props.onDelete(this.props.movie.id)} icon>delete</Button>
+                        <Button onClick={() => this.props.onDelete(this.props.movie._id)} icon>delete</Button>
                     </Cell>
                 </Grid>
 

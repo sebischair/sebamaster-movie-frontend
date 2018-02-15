@@ -40,7 +40,6 @@ export class MovieFormView extends React.Component {
     }
 
     goBack(id) {
-        console.log(this.refs);
         if(this.props.location.state != undefined && this.props.location.state.fromList) {
             this.props.history.push('/');
         } else {
@@ -65,7 +64,7 @@ export class MovieFormView extends React.Component {
                 if(this.props.location.state != undefined && this.props.location.state.fromList) {
                     this.props.history.push('/');
                 } else {
-                    this.props.history.push(`/show/${movie.id}`)
+                    this.props.history.push(`/show/${movie._id}`)
                 }
             }).catch((e) => {
                 console.log(e);

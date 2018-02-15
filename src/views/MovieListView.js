@@ -23,7 +23,6 @@ export class MovieListView extends React.Component {
         });
 
         MovieService.getMovies().then((resp) => {
-            console.log(resp);
             this.setState({
                 data: [...resp.data],
                 loading: false
@@ -39,7 +38,7 @@ export class MovieListView extends React.Component {
         });
         MovieService.deleteMovie(id).then((resp) => {
             if(resp == 200) {
-                let movieIndex = this.state.data.map(movie => movie['id']).indexOf(id);
+                let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
                 let movies = this.state.data;
                 movies.splice(movieIndex, 1);
                 this.setState({

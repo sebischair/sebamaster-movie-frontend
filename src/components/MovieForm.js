@@ -69,7 +69,6 @@ export class MovieForm extends React.Component {
         movie.synopsis = this.state.synopsis;
 
         if(movie.title == undefined || movie.title == '' || movie.year == undefined || movie.year == '' || movie.synopsis == undefined || movie.synopsis == '') {
-            console.log(this.para);
             this.setState(Object.assign({}, this.state, {doAlert: true}));
         }
          else {
@@ -79,7 +78,7 @@ export class MovieForm extends React.Component {
 
     handleAbort(event) {
         if(this.props.movie != undefined) {
-            this.props.onAbort(this.props.movie.id);
+            this.props.onAbort(this.props.movie._id);
         } else {
             this.props.onAbort();
         }
