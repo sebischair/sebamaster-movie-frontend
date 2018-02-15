@@ -2,7 +2,7 @@
 
 import React from 'react';
 import MovieService from '../services/MovieService';
-import {MovieForm} from './../components/MovieForm';
+import { MovieForm } from './../components/MovieForm';
 
 
 export class MovieFormView extends React.Component {
@@ -12,7 +12,13 @@ export class MovieFormView extends React.Component {
     }
 
     componentWillMount(props){
-        if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.movie != undefined) {
+        if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.isAdd) {
+            this.setState({
+                loading: false,
+                movie: undefined
+            });
+        }
+        else if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.movie != undefined) {
             this.setState({
                 loading: false,
                 movie: this.props.location.state.movie
@@ -34,7 +40,7 @@ export class MovieFormView extends React.Component {
     }
 
     goBack(id) {
-        console.log(this.props.location);
+        console.log(this.refs);
         if(this.props.location.state != undefined && this.props.location.state.fromList) {
             this.props.history.push('/');
         } else {
@@ -43,15 +49,28 @@ export class MovieFormView extends React.Component {
     }
 
     updateMovie(movie) {
-        MovieService.updateMovie(movie).then((resp) => {
-            if(this.props.location.state != undefined && this.props.location.state.fromList) {
-                this.props.history.push('/');
-            } else {
-                this.props.history.push(`/show/${movie.id}`)
-            }
-        }).catch((e) => {
-           console.log(e);
-        });
+        if(this.props.location.state != undefined && this.props.location.state.isAdd) {
+            MovieService.createMovie(movie).then((resp) => {
+                if(resp != undefined) {
+                    this.props.history.push('/');
+                }
+                else {
+                    console.log('Error while creating movie');
+                }
+            }).catch((e) => {
+                console.log(e);
+            });
+        } else {
+            MovieService.updateMovie(movie).then((resp) => {
+                if(this.props.location.state != undefined && this.props.location.state.fromList) {
+                    this.props.history.push('/');
+                } else {
+                    this.props.history.push(`/show/${movie.id}`)
+                }
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
     }
 
     render() {

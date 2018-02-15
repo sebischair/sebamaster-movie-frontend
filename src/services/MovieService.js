@@ -59,4 +59,27 @@ export default class MovieService {
             });
         });
     }
+
+    static createMovie(movie) {
+        movie.id = Math.floor((Math.random() * 100000000) + 1).toString();
+        movie.posters = {
+            thumbnail: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg",
+            profile: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg",
+            detailed: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg",
+            original: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg"
+        };
+        return new Promise((resolve, reject) => {
+           MoviesAPISimulator.createMovie(movie).then((resp) => {
+                if(resp.data != undefined) {
+                    resolve(resp.data);
+                }
+                else {
+                    reject(new Error('Error while creating movie'));
+                }
+           }).catch((e) => {
+               console.log(e);
+               reject(e);
+           })
+        });
+    }
 }

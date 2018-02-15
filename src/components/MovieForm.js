@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, Button, FontIcon, TextField } from 'react-md';
 import { Link } from 'react-router-dom'
+import { AlertMessage } from './AlertMessage';
 
 const style = { maxWidth: 500 };
 
@@ -11,12 +12,23 @@ export class MovieForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            title : props.movie.title,
-            year : props.movie.year,
-            rating : props.movie.mpaa_rating,
-            synopsis: props.movie.synopsis
-        };
+        if(this.props.movie != undefined) {
+            this.state = {
+                title : props.movie.title,
+                year : props.movie.year,
+                rating : props.movie.mpaa_rating,
+                synopsis: props.movie.synopsis,
+                doAlert: false
+            };
+        } else {
+            this.state = {
+                title : '',
+                year : '',
+                rating : '',
+                synopsis: '',
+                doAlert: false
+            };
+        }
 
         this.handleChangeTitle = this.handleChangeTitle.bind(this);
         this.handleChangeYear = this.handleChangeYear.bind(this);
@@ -28,35 +40,49 @@ export class MovieForm extends React.Component {
     }
 
     handleChangeTitle(value) {
-        this.setState({title: value});
+        this.setState(Object.assign({}, this.state, {title: value}));
     }
 
     handleChangeYear(value) {
-        this.setState({year: value});
+        this.setState(Object.assign({}, this.state, {year: value}));
     }
 
     handleChangeRating(value) {
-        this.setState({rating: value});
+        this.setState(Object.assign({}, this.state, {rating: value}));
     }
 
     handleChangeSynopsis(value) {
-        this.setState({synopsis: value});
+        this.setState(Object.assign({}, this.state, {synopsis: value}));
     }
 
     handleSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
 
         let movie = this.props.movie;
+        if(movie == undefined) {
+            movie = {};
+        }
+
         movie.title = this.state.title;
         movie.mpaa_rating = this.state.rating;
         movie.year = this.state.year;
         movie.synopsis = this.state.synopsis;
 
-        this.props.onSubmit(movie);
+        if(movie.title == undefined || movie.title == '' || movie.year == undefined || movie.year == '' || movie.synopsis == undefined || movie.synopsis == '') {
+            console.log(this.para);
+            this.setState(Object.assign({}, this.state, {doAlert: true}));
+        }
+         else {
+            this.props.onSubmit(movie);
+        }
     }
 
     handleAbort(event) {
-        this.props.onAbort(this.props.movie.id);
+        if(this.props.movie != undefined) {
+            this.props.onAbort(this.props.movie.id);
+        } else {
+            this.props.onAbort();
+        }
     }
 
     render() {
@@ -99,6 +125,7 @@ export class MovieForm extends React.Component {
 
                     <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Save</Button>
                     <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                    <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
                 </form>
             </Card>
         );

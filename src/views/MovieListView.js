@@ -23,6 +23,7 @@ export class MovieListView extends React.Component {
         });
 
         MovieService.getMovies().then((resp) => {
+            console.log(resp);
             this.setState({
                 data: [...resp.data],
                 loading: false

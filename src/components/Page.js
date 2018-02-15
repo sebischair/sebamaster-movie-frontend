@@ -13,9 +13,8 @@ export default class Page extends React.Component {
 
         this.state = {
             title: ''
+        }
     }
-    }
-
 
     componentDidMount(){
 
@@ -24,7 +23,6 @@ export default class Page extends React.Component {
        });
 
     }
-
 
     render() {
         return (
