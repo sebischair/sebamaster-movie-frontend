@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import Styled from 'styled-components'
 
-export const SimpleLink = styled(Link)`
+export const SimpleLink = Styled(Link)`
     text-decoration: none;
 `;

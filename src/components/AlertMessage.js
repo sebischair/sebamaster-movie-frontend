@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import Styled from "styled-components";
 
-export const AlertMessage = styled.div`
-    text-align: center !important; 
+export const AlertMessage = Styled.div`
+    text-align: center;
     color: red;
-    margin-top: 10px !important;
+    margin-top: 10px;
+    font-weight: bold;
 `;
