@@ -2,8 +2,9 @@
 
 import React from 'react';
 
+import { MovieList } from '../components/MovieList';
+
 import MovieService from '../services/MovieService';
-import {MovieList} from './../components/MovieList';
 
 
 export class MovieListView extends React.Component {
@@ -28,7 +29,6 @@ export class MovieListView extends React.Component {
                 loading: false
             });
         });
-
     }
 
     deleteMovie(id) {
@@ -62,6 +62,8 @@ export class MovieListView extends React.Component {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieList data={this.state.data} onDelete={(id) => this.deleteMovie(id)} />);
+        return (
+            <MovieList data={this.state.data} onDelete={(id) => this.deleteMovie(id)}/>
+        );
     }
 }

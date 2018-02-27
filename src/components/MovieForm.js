@@ -2,12 +2,16 @@
 
 import React from 'react';
 import { Card, Button, FontIcon, TextField } from 'react-md';
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+
 import { AlertMessage } from './AlertMessage';
+import Page from './Page';
+
 
 const style = { maxWidth: 500 };
 
-export class MovieForm extends React.Component {
+
+class MovieForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -36,7 +40,6 @@ export class MovieForm extends React.Component {
         this.handleChangeSynopsis = this.handleChangeSynopsis.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleAbort = this.handleAbort.bind(this);
     }
 
     handleChangeTitle(value) {
@@ -76,57 +79,53 @@ export class MovieForm extends React.Component {
         }
     }
 
-    handleAbort(event) {
-        if(this.props.movie != undefined) {
-            this.props.onAbort(this.props.movie._id);
-        } else {
-            this.props.onAbort();
-        }
-    }
-
     render() {
         return (
-            <Card style={style} className="md-block-centered">
-                <form className="md-grid" onSubmit={this.handleSubmit} onReset={this.handleAbort}>
-                    <TextField
-                        label="Title"
-                        id="TitleField"
-                        type="text"
-                        className="md-row"
-                        required={true}
-                        value={this.state.title}
-                        onChange={this.handleChangeTitle}/>
-                    <TextField
-                        label="Year"
-                        id="YearField"
-                        type="number"
-                        className="md-row"
-                        required={true}
-                        value={this.state.year}
-                        onChange={this.handleChangeYear}/>
-                    <TextField
-                        label="Rating"
-                        id="RatingField"
-                        type="text"
-                        className="md-row"
-                        required={false}
-                        value={this.state.rating}
-                        onChange={this.handleChangeRating}/>
-                    <TextField
-                        label="Synopsis"
-                        id="SynopsisField"
-                        type="text"
-                        className="md-row"
-                        rows={5}
-                        required={true}
-                        value={this.state.synopsis}
-                        onChange={this.handleChangeSynopsis}/>
+            <Page>
+                <Card style={style} className="md-block-centered">
+                    <form className="md-grid" onSubmit={this.handleSubmit} onReset={() => this.props.history.goBack()}>
+                        <TextField
+                            label="Title"
+                            id="TitleField"
+                            type="text"
+                            className="md-row"
+                            required={true}
+                            value={this.state.title}
+                            onChange={this.handleChangeTitle}/>
+                        <TextField
+                            label="Year"
+                            id="YearField"
+                            type="number"
+                            className="md-row"
+                            required={true}
+                            value={this.state.year}
+                            onChange={this.handleChangeYear}/>
+                        <TextField
+                            label="Rating"
+                            id="RatingField"
+                            type="text"
+                            className="md-row"
+                            required={false}
+                            value={this.state.rating}
+                            onChange={this.handleChangeRating}/>
+                        <TextField
+                            label="Synopsis"
+                            id="SynopsisField"
+                            type="text"
+                            className="md-row"
+                            rows={5}
+                            required={true}
+                            value={this.state.synopsis}
+                            onChange={this.handleChangeSynopsis}/>
 
-                    <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Save</Button>
-                    <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
-                    <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
-                </form>
-            </Card>
+                        <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Save</Button>
+                        <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                        <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
+                    </form>
+                </Card>
+            </Page>
         );
     }
 }
+
+export default withRouter(MovieForm);

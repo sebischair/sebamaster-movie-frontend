@@ -1,8 +1,10 @@
 "use strict";
 
 import React from 'react';
+
+import MovieForm from './../components/MovieForm';
+
 import MovieService from '../services/MovieService';
-import { MovieForm } from './../components/MovieForm';
 
 
 export class MovieFormView extends React.Component {
@@ -11,19 +13,20 @@ export class MovieFormView extends React.Component {
         super(props);
     }
 
-    componentWillMount(props){
-        if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.isAdd) {
+    componentWillMount(){
+        if(this.props.history.location.pathname == '/add') {
             this.setState({
                 loading: false,
                 movie: undefined
             });
         }
-        else if(this.props.location != undefined && this.props.location.state != undefined && this.props.location.state.movie != undefined) {
+        else if(this.props.location.state != undefined && this.props.location.state.movie != undefined) {
             this.setState({
                 loading: false,
                 movie: this.props.location.state.movie
             });
-        } else {
+        }
+        else {
             this.setState({
                 loading: true
             });
@@ -36,14 +39,6 @@ export class MovieFormView extends React.Component {
                     loading: false
                 });
             });
-        }
-    }
-
-    goBack(id) {
-        if(this.props.location.state != undefined && this.props.location.state.fromList) {
-            this.props.history.push('/');
-        } else {
-            this.props.history.push(`/show/${id}`)
         }
     }
 
@@ -77,6 +72,6 @@ export class MovieFormView extends React.Component {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieForm movie={this.state.movie} onAbort={(id) => this.goBack(id)} onSubmit={(movie) => this.updateMovie(movie)} />);
+        return (<MovieForm movie={this.state.movie} onSubmit={(movie) => this.updateMovie(movie)} />);
     }
 }

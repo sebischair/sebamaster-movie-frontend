@@ -10,7 +10,7 @@ export default class MovieService {
 
     static getMovies(){
        return new Promise((resolve, reject) => {
-           $.get({
+           $.ajax({
                url: MovieService.baseURL(),
                type: 'GET',
                success: function (data) {

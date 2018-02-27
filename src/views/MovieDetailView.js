@@ -1,8 +1,10 @@
 "use strict";
 
 import React from 'react';
+
+import { MovieDetail } from '../components/MovieDetail';
+
 import MovieService from '../services/MovieService';
-import {MovieDetail} from './../components/MovieDetail';
 
 
 export class MovieDetailView extends React.Component {
@@ -40,6 +42,8 @@ export class MovieDetailView extends React.Component {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieDetail movie={this.state.movie} onDelete={(id) => this.deleteMovie(id)}/>);
+        return (
+            <MovieDetail movie={this.state.movie} onDelete={(id) => this.deleteMovie(id)}/>
+        );
     }
 }
