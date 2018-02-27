@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, Button, TextField } from 'react-md';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import { AlertMessage } from './AlertMessage';
 import Page from './Page';
@@ -11,7 +11,7 @@ import Page from './Page';
 const style = { maxWidth: 500 };
 
 
-class UserLogin extends React.Component {
+class UserSignup extends React.Component {
 
     constructor(props) {
         super(props);
@@ -58,8 +58,8 @@ class UserLogin extends React.Component {
                 <Card style={style} className="md-block-centered">
                     <form className="md-grid" onSubmit={this.handleSubmit} onReset={() => this.props.history.goBack()}>
                         <TextField
-                            label="Login"
-                            id="LoginField"
+                            label="Username"
+                            id="UsernameField"
                             type="text"
                             className="md-row"
                             required={true}
@@ -74,9 +74,8 @@ class UserLogin extends React.Component {
                             value={this.state.password}
                             onChange={this.handleChangePassword}/>
 
-                        <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Login</Button>
+                        <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Register</Button>
                         <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
-                        <Link to={'/register'} className="md-cell">Not registered yet?</Link>
                         <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
                         <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
                     </form>
@@ -86,4 +85,4 @@ class UserLogin extends React.Component {
     }
 };
 
-export default withRouter(UserLogin);
+export default withRouter(UserSignup);

@@ -26,6 +26,7 @@ export const Footer = Styled(PlainFooter)`
     left: 0;
     right: 0;
     position: fixed;
+    background: white;
     > p {
         text-align: center;
         margin-top: 4px;

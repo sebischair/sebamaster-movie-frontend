@@ -6,6 +6,8 @@ export default class MovieService {
     constructor(){
     }
 
+    static apiURL() {return "http://localhost:3000/api"; }
+
     static baseURL() {return "http://localhost:3000/api/movies"; }
 
     static getMovies(){

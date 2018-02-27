@@ -6,6 +6,8 @@ export default class UserService {
     constructor() {
     }
 
+    static apiURL() {return "http://localhost:3000/api"; }
+
     static baseURL() {return "http://localhost:3000/api/user"; }
 
     static register(user, pass) {
@@ -16,6 +18,17 @@ export default class UserService {
                data: {
                    username: user,
                    password: pass
+               },
+               success: function(resp) {
+                   resolve(resp);
+               },
+               error: function(err) {
+                   if(err.responseJSON.errmsg == "E11000 duplicate key error collection: moviedb.users index: username_1 dup key: { : \"ingo\" }") {
+                       reject("Username exists");
+                   }
+                   else {
+                       reject(err.responseJSON.errmsg);
+                   }
                }
            });
         });
@@ -31,10 +44,10 @@ export default class UserService {
                    password: pass
                },
                success: function(resp) {
-                   console.log(resp);
+                   resolve(resp);
                },
                error: function(err) {
-                   console.log(err);
+                   reject(err.responseText);
                }
            });
         });
@@ -53,7 +66,7 @@ export default class UserService {
         return JSON.parse(window.atob(base64)).user;
     }
 
-    isAuthenticated() {
-        return !!this.window.localStorage['jwtToken'];
+    static isAuthenticated() {
+        return !!window.localStorage['jwtToken'];
     }
 }

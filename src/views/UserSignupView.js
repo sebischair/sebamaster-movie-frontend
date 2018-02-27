@@ -2,32 +2,32 @@
 
 import React from 'react';
 
-import UserLogin from '../components/UserLogin';
+import UserSignup from '../components/UserSignup';
 
 import UserService from '../services/UserService';
 
 
-export class UserLoginView extends React.Component {
+export class UserSignupView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    login(user) {
-        UserService.login(user.username, user.password).then((resp) => {
+    signup(user) {
+        UserService.register(user.username, user.password).then((resp) => {
             this.props.history.push('/');
         }).catch((e) => {
             console.error(e);
             this.setState({
                 error: e
             });
-        });
+        })
     }
 
     render() {
         return (
-          <UserLogin onSubmit={(user) => this.login(user)} error={this.state.error}></UserLogin>
+            <UserSignup onSubmit={(user) => this.signup(user)} error={this.state.error}></UserSignup>
         );
     }
 }
