@@ -1,3 +1,5 @@
+"use strict";
+
 import Styled from "styled-components";
 
 export const AlertMessage = Styled.div`

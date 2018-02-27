@@ -8,6 +8,7 @@ import { SimpleLink } from './SimpleLink';
 
 import UserService from '../services/UserService';
 
+
 export class MovieListRow extends React.Component {
 
     constructor(props) {

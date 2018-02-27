@@ -3,6 +3,7 @@
 import $ from 'jquery';
 
 export default class MovieService {
+
     constructor(){
     }
 
