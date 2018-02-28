@@ -23,11 +23,13 @@ export class MovieListView extends React.Component {
             loading: true
         });
 
-        MovieService.getMovies().then((resp) => {
+        MovieService.getMovies().then((data) => {
             this.setState({
-                data: [...resp.data],
+                data: [...data],
                 loading: false
             });
+        }).catch((e) => {
+            console.error(e);
         });
     }
 
@@ -36,24 +38,17 @@ export class MovieListView extends React.Component {
             data: [...this.state.data],
             loading: true
         });
-        MovieService.deleteMovie(id).then((resp) => {
-            if(resp == 200) {
-                let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
-                let movies = this.state.data;
-                movies.splice(movieIndex, 1);
-                this.setState({
-                   data: [...movies],
-                   loading: false
-                });
-            } else {
-                this.setState({
-                    data: [...this.state.data],
-                    loading: false
-                });
-                console.log(`The movie with id ${id} was not found`);
-            }
+        MovieService.deleteMovie(id).then((message) => {
+
+            let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
+            let movies = this.state.data;
+            movies.splice(movieIndex, 1);
+            this.setState({
+               data: [...movies],
+               loading: false
+            });
         }).catch((e) => {
-            console.log(e);
+            console.error(e);
         });
     }
 

@@ -17,10 +17,6 @@ class KebabMenu extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log(this.state);
-    }
-
     logout() {
         UserService.logout();
         this.state = {
@@ -28,6 +24,9 @@ class KebabMenu extends React.Component {
         };
         if(this.props.location.pathname != '/') {
             this.props.history.push('/');
+        }
+        else {
+            window.location.reload();
         }
     }
 

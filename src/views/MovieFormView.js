@@ -36,39 +36,31 @@ export class MovieFormView extends React.Component {
 
             let id = this.props.match.params.id;
 
-            MovieService.getMovie(id).then((resp) => {
+            MovieService.getMovie(id).then((data) => {
                 this.setState({
-                    movie: resp,
+                    movie: data,
                     loading: false,
                     error: undefined
                 });
+            }).catch((e) => {
+                console.error(e);
             });
         }
     }
 
     updateMovie(movie) {
-        if(this.props.location.state != undefined && this.props.location.state.isAdd) {
-            MovieService.createMovie(movie).then((resp) => {
-                if(resp != undefined) {
-                    this.props.history.push('/');
-                }
-                else {
-                    console.log('Error while creating movie');
-                    this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
-                }
+        if(this.state.movie == undefined) {
+            MovieService.createMovie(movie).then((data) => {
+                this.props.history.push('/');
             }).catch((e) => {
-                console.log(e);
+                console.error(e);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             });
         } else {
-            MovieService.updateMovie(movie).then((resp) => {
-                if(this.props.location.state != undefined && this.props.location.state.fromList) {
-                    this.props.history.push('/');
-                } else {
-                    this.props.history.push(`/show/${movie._id}`)
-                }
+            MovieService.updateMovie(movie).then((data) => {
+                this.props.history.goBack();
             }).catch((e) => {
-                console.log(e);
+                console.error(e);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             });
         }

@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import $ from 'jquery';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import { MovieListView } from './views/MovieListView';
 import { MovieDetailView }   from './views/MovieDetailView';
@@ -24,28 +23,24 @@ export default class App extends React.Component {
             routes: [
                 { component: MovieListView , path: '/', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
-                { component: MovieFormView , path: '/edit/:id'},
-                { component: MovieFormView , path: '/add'},
+                { render: (props) => {
+                        if(UserService.isAuthenticated()) {
+                            return (<MovieFormView {... props} />)
+                        }
+                        else {
+                            return (<Redirect to={'/login'}/>)
+                        }} , path: '/edit/:id'},
+                { render: (props) => {
+                    if(UserService.isAuthenticated()) {
+                        return (<MovieFormView {... props} />)
+                    }
+                    else {
+                        return (<Redirect to={'/login'}/>)
+                    }}, path: '/add',},
                 { component: UserLoginView, path: '/login'},
                 { component: UserSignupView, path: '/register'}
             ]
         };
-
-        $(document).ajaxSend(function(event, jqXHR, ajaxOptions, data) {
-            if(ajaxOptions.url.indexOf(UserService.apiURL()) === 0) {
-                let token = window.localStorage['jwtToken'];
-
-                if(token) {
-                    jqXHR.setRequestHeader('Authorization', 'JWT ' + token);
-                }
-            }
-        });
-
-        $(document).ajaxSuccess(function(event, jqXHR, ajaxOptions, data) {
-            if(data.hasOwnProperty('token')) {
-                window.localStorage['jwtToken'] = data.token;
-            }
-        });
     }
 
     componentDidMount(){

@@ -1,55 +1,47 @@
 "use strict";
 
-import $ from 'jquery';
+import HttpService from "./HttpService";
 
 export default class UserService {
+
     constructor() {
     }
-
-    static apiURL() {return "http://localhost:3000/api"; }
 
     static baseURL() {return "http://localhost:3000/auth"; }
 
     static register(user, pass) {
         return new Promise((resolve, reject) => {
-           $.ajax({
-               url: `${UserService.baseURL()}/signup`,
-               type: 'POST',
-               data: {
-                   username: user,
-                   password: pass
-               },
-               success: function(resp) {
-                   resolve(resp);
-               },
-               error: function(err) {
-                   if(err.responseJSON.errmsg == "E11000 duplicate key error collection: moviedb.users index: username_1 dup key: { : \"ingo\" }") {
-                       reject("Username exists");
-                   }
-                   else {
-                       reject(err.responseJSON.errmsg);
-                   }
-               }
-           });
+            HttpService.post(`${UserService.baseURL()}/register`, {
+                username: user,
+                password: pass
+            }, function(data, textStatus, jqXHR) {
+                if(jqXHR.status == 200 && data != undefined) {
+                    resolve(data);
+                }
+                else {
+                    reject('Error while registering user');
+                }
+            }, function(jqXHR, textStatus, error) {
+                reject(textStatus);
+            });
         });
     }
 
     static login(user, pass) {
         return new Promise((resolve, reject) => {
-           $.ajax({
-               url: `${UserService.baseURL()}/login`,
-               type: 'POST',
-               data: {
-                   username: user,
-                   password: pass
-               },
-               success: function(resp) {
-                   resolve(resp);
-               },
-               error: function(err) {
-                   reject(err.responseText);
-               }
-           });
+            HttpService.post(`${UserService.baseURL()}/login`, {
+                username: user,
+                password: pass
+            }, function(data, textStatus, jqXHR) {
+                if(jqXHR.status == 200 && data != undefined) {
+                    resolve(data);
+                }
+                else {
+                    reject('Error while registering user');
+                }
+            }, function(jqXHR, textStatus, error) {
+                reject(textStatus);
+            });
         });
     }
 
@@ -63,7 +55,10 @@ export default class UserService {
 
         let base64Url = token.split('.')[1];
         let base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64)).user;
+        return {
+            id : JSON.parse(window.atob(base64)).id,
+            username: JSON.parse(window.atob(base64)).username
+        };
     }
 
     static isAuthenticated() {

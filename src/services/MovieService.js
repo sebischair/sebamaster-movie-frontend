@@ -1,76 +1,81 @@
 "use strict";
 
-import $ from 'jquery';
+import HttpService from './HttpService';
 
 export default class MovieService {
 
     constructor(){
     }
 
-    static apiURL() {return "http://localhost:3000/api"; }
-
-    static baseURL() {return "http://localhost:3000/movies"; }
+    static baseURL() {return "http://localhost:3000/movies" }
 
     static getMovies(){
        return new Promise((resolve, reject) => {
-           $.ajax({
-               url: MovieService.baseURL(),
-               type: 'GET',
-               success: function (data) {
-                   resolve({data: data});
+           HttpService.get(this.baseURL(), function(data, textStatus, jqXHR) {
+               if(jqXHR.status == 200) {
+                   if(data != undefined) {
+                       resolve(data);
+                   }
+                   else {
+                       reject('Error while retrieving movies');
+                   }
                }
+               else {
+                   reject(textStatus);
+               }
+           }, function(jqXHR, textStatus, error) {
+               reject(textStatus);
            });
        });
     }
 
     static getMovie(id) {
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url: MovieService.baseURL() + `/${id}`,
-                type: 'GET',
-                success: function (data) {
-                    if (data != undefined || Object.keys(data).length !== 0) {
+            HttpService.get(`${MovieService.baseURL()}/${id}`, function(data, textStatus, jqXHR) {
+                if(jqXHR.status == 200) {
+                    if(data != undefined || Object.keys(data).length !== 0) {
                         resolve(data);
                     }
                     else {
-                        reject(new Error(`The movie with id ${id} was not found`));
+                        reject('Error while retrieving movie');
                     }
                 }
+                else {
+                    reject(textStatus);
+                }
+            }, function(jqXHR, textStatus, error) {
+                reject(textStatus);
             });
         });
     }
 
     static deleteMovie(id) {
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url: MovieService.baseURL() + `/${id}`,
-                type: 'DELETE',
-                success: function (data) {
-                    if(data == 'OK') {
-                        resolve(200);
-                    } else {
-                        reject('Error while deleting');
-                    }
+            HttpService.remove(`${MovieService.baseURL()}/${id}`, function(data, textStatus, jqXHR) {
+                if(jqXHR.status == 200 || data.message != undefined) {
+                    resolve(data.message);
                 }
+                else {
+                    reject('Error while deleting');
+                }
+            }, function(jqXHR, textStatus, error) {
+                reject(textStatus);
             });
         });
     }
 
     static updateMovie(movie) {
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url: MovieService.baseURL() + `/${movie._id}`,
-                type: 'PUT',
-                data: movie,
-                success: function(data) {
-                    console.log(data);
-                    if(data != undefined && Object.keys(data).length !== 0) {
-                        resolve(data);
-                    }
-                    else {
-                        reject(`Error while updating movie with id ${movie._id}`);
-                    }
+            HttpService.put(`${this.baseURL()}/${movie._id}`, movie, function(data, textStatus, jqXHR) {
+                console.log(data);
+                if(jqXHR.status == 200 && data != undefined) {
+                    resolve(data);
                 }
+                else {
+                    reject('Error while updating movie');
+                }
+            }, function(jqXHR, textStatus, error) {
+               reject(textStatus);
             });
         });
     }
@@ -84,18 +89,15 @@ export default class MovieService {
             original: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg"
         };
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url: MovieService.baseURL(),
-                type: 'POST',
-                data: movie,
-                success: function(data) {
-                    if(data != undefined && Object.keys(data).length !== 0) {
-                        resolve(data);
-                    }
-                    else {
-                        reject('Error while creating movie');
-                    }
+            HttpService.post(MovieService.baseURL(), movie, function(data, textStatus, jqXHR) {
+                if(jqXHR.status == 201 && data != undefined) {
+                    resolve(data);
                 }
+                else {
+                    reject('Error while creating movie');
+                }
+            }, function(jqXHR, textStatus, error) {
+                reject(textStatus);
             });
         });
     }
