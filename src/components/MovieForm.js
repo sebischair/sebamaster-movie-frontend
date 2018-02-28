@@ -21,16 +21,14 @@ class MovieForm extends React.Component {
                 title : props.movie.title,
                 year : props.movie.year,
                 rating : props.movie.mpaa_rating,
-                synopsis: props.movie.synopsis,
-                doAlert: false
+                synopsis: props.movie.synopsis
             };
         } else {
             this.state = {
                 title : '',
                 year : '',
                 rating : '',
-                synopsis: '',
-                doAlert: false
+                synopsis: ''
             };
         }
 
@@ -71,12 +69,7 @@ class MovieForm extends React.Component {
         movie.year = this.state.year;
         movie.synopsis = this.state.synopsis;
 
-        if(movie.title == undefined || movie.title == '' || movie.year == undefined || movie.year == '' || movie.synopsis == undefined || movie.synopsis == '') {
-            this.setState(Object.assign({}, this.state, {doAlert: true}));
-        }
-         else {
-            this.props.onSubmit(movie);
-        }
+        this.props.onSubmit(movie);
     }
 
     render() {
@@ -91,7 +84,8 @@ class MovieForm extends React.Component {
                             className="md-row"
                             required={true}
                             value={this.state.title}
-                            onChange={this.handleChangeTitle}/>
+                            onChange={this.handleChangeTitle}
+                            errorText="Title is required"/>
                         <TextField
                             label="Year"
                             id="YearField"
@@ -99,7 +93,9 @@ class MovieForm extends React.Component {
                             className="md-row"
                             required={true}
                             value={this.state.year}
-                            onChange={this.handleChangeYear}/>
+                            onChange={this.handleChangeYear}
+                            errorText="Year is required"
+                            maxLength={4}/>
                         <TextField
                             label="Rating"
                             id="RatingField"
@@ -116,11 +112,14 @@ class MovieForm extends React.Component {
                             rows={5}
                             required={true}
                             value={this.state.synopsis}
-                            onChange={this.handleChangeSynopsis}/>
+                            onChange={this.handleChangeSynopsis}
+                            errorText="Synopsis is required"/>
 
-                        <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Save</Button>
+                        <Button id="submit" type="submit"
+                                disabled={this.state.year.toString().length != 4 || this.state.title == undefined || this.state.title == '' || this.state.year == undefined || this.state.year == '' || this.state.synopsis == undefined || this.state.synopsis == ''}
+                                raised primary className="md-cell md-cell--2">Save</Button>
                         <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
-                        <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
+                        <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
                     </form>
                 </Card>
             </Page>

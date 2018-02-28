@@ -17,18 +17,21 @@ export class MovieFormView extends React.Component {
         if(this.props.history.location.pathname == '/add') {
             this.setState({
                 loading: false,
-                movie: undefined
+                movie: undefined,
+                error: undefined
             });
         }
         else if(this.props.location.state != undefined && this.props.location.state.movie != undefined) {
             this.setState({
                 loading: false,
-                movie: this.props.location.state.movie
+                movie: this.props.location.state.movie,
+                error: undefined
             });
         }
         else {
             this.setState({
-                loading: true
+                loading: true,
+                error: undefined
             });
 
             let id = this.props.match.params.id;
@@ -36,7 +39,8 @@ export class MovieFormView extends React.Component {
             MovieService.getMovie(id).then((resp) => {
                 this.setState({
                     movie: resp,
-                    loading: false
+                    loading: false,
+                    error: undefined
                 });
             });
         }
@@ -50,9 +54,11 @@ export class MovieFormView extends React.Component {
                 }
                 else {
                     console.log('Error while creating movie');
+                    this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
                 }
             }).catch((e) => {
                 console.log(e);
+                this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             });
         } else {
             MovieService.updateMovie(movie).then((resp) => {
@@ -63,6 +69,7 @@ export class MovieFormView extends React.Component {
                 }
             }).catch((e) => {
                 console.log(e);
+                this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             });
         }
     }
@@ -72,6 +79,6 @@ export class MovieFormView extends React.Component {
             return (<h2>Loading...</h2>);
         }
 
-        return (<MovieForm movie={this.state.movie} onSubmit={(movie) => this.updateMovie(movie)} />);
+        return (<MovieForm movie={this.state.movie} onSubmit={(movie) => this.updateMovie(movie)} error={this.state.error} />);
     }
 }

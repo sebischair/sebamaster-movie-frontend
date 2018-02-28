@@ -8,7 +8,7 @@ export default class UserService {
 
     static apiURL() {return "http://localhost:3000/api"; }
 
-    static baseURL() {return "http://localhost:3000/api/user"; }
+    static baseURL() {return "http://localhost:3000/auth"; }
 
     static register(user, pass) {
         return new Promise((resolve, reject) => {

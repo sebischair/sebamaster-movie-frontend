@@ -18,8 +18,7 @@ class UserLogin extends React.Component {
 
         this.state = {
             username : '',
-            password : '',
-            doAlert: false
+            password : ''
         };
 
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
@@ -44,12 +43,7 @@ class UserLogin extends React.Component {
             password: this.state.password
         };
 
-        if(user.username == undefined || user.username == '' || user.password == undefined || user.password == '') {
-            this.setState(Object.assign({}, this.state, {doAlert: true}));
-        }
-        else {
-            this.props.onSubmit(user);
-        }
+        this.props.onSubmit(user);
     }
 
     render() {
@@ -64,7 +58,8 @@ class UserLogin extends React.Component {
                             className="md-row"
                             required={true}
                             value={this.state.username}
-                            onChange={this.handleChangeUsername}/>
+                            onChange={this.handleChangeUsername}
+                            errorText="Login is required"/>
                         <TextField
                             label="Password"
                             id="PasswordField"
@@ -72,12 +67,14 @@ class UserLogin extends React.Component {
                             className="md-row"
                             required={true}
                             value={this.state.password}
-                            onChange={this.handleChangePassword}/>
+                            onChange={this.handleChangePassword}
+                            errorText="Password is required"/>
 
-                        <Button id="submit" type="submit" raised primary className="md-cell md-cell--2">Login</Button>
+                        <Button id="submit" type="submit"
+                                disabled={this.state.username == undefined || this.state.username == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                raised primary className="md-cell md-cell--2">Login</Button>
                         <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
                         <Link to={'/register'} className="md-cell">Not registered yet?</Link>
-                        <AlertMessage className="md-row md-full-width" >{this.state.doAlert ? 'Please provide all information required' : ''}</AlertMessage>
                         <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
                     </form>
                 </Card>

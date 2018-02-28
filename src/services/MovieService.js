@@ -9,7 +9,7 @@ export default class MovieService {
 
     static apiURL() {return "http://localhost:3000/api"; }
 
-    static baseURL() {return "http://localhost:3000/api/movies"; }
+    static baseURL() {return "http://localhost:3000/movies"; }
 
     static getMovies(){
        return new Promise((resolve, reject) => {
