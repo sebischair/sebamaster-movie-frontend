@@ -1,6 +1,6 @@
 "use strict";
 
-import HttpService from "./HttpService";
+import MovieAPISimulator from "./MovieAPISimulator";
 
 export default class UserService {
 
@@ -11,36 +11,32 @@ export default class UserService {
 
     static register(user, pass) {
         return new Promise((resolve, reject) => {
-            HttpService.post(`${UserService.baseURL()}/register`, {
-                username: user,
-                password: pass
-            }, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200 && data != undefined) {
-                    resolve(data);
+            MovieAPISimulator.register(user, pass).then((resp) => {
+                if(resp != undefined && resp.token != undefined) {
+                    window.localStorage['jwtToken'] = resp.token;
+                    resolve(resp.token);
                 }
                 else {
-                    reject('Error while registering user');
+                    reject('Error while signing up user');
                 }
-            }, function(jqXHR, textStatus, error) {
-                reject(textStatus);
+            }).catch((e) => {
+               reject(e);
             });
         });
     }
 
     static login(user, pass) {
         return new Promise((resolve, reject) => {
-            HttpService.post(`${UserService.baseURL()}/login`, {
-                username: user,
-                password: pass
-            }, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200 && data != undefined) {
-                    resolve(data);
+            MovieAPISimulator.login(user, pass).then((resp) => {
+                if(resp != undefined && resp.token != undefined) {
+                    window.localStorage['jwtToken'] = resp.token;
+                    resolve(resp.token);
                 }
                 else {
-                    reject('Error while registering user');
+                    reject('Error while logging in');
                 }
-            }, function(jqXHR, textStatus, error) {
-                reject(textStatus);
+            }).catch((e) => {
+                reject(e);
             });
         });
     }

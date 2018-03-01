@@ -38,7 +38,9 @@
     "react-md": "^1.2.11",
     "webfontloader": "^1.6.28",
     "styled-components": "^3.1.6",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "jsonwebtoken": "^8.1.1",
+    "bcryptjs": "^2.4.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -39,8 +39,7 @@ export class MovieListView extends React.Component {
             loading: true
         });
         MovieService.deleteMovie(id).then((message) => {
-
-            let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
+            let movieIndex = this.state.data.map(movie => movie['id']).indexOf(id);
             let movies = this.state.data;
             movies.splice(movieIndex, 1);
             this.setState({
