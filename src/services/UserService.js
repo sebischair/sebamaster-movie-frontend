@@ -14,14 +14,9 @@ export default class UserService {
             HttpService.post(`${UserService.baseURL()}/register`, {
                 username: user,
                 password: pass
-            }, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200 && data != undefined) {
-                    resolve(data);
-                }
-                else {
-                    reject('Error while registering user');
-                }
-            }, function(jqXHR, textStatus, error) {
+            }, function(data) {
+                resolve(data);
+            }, function(textStatus) {
                 reject(textStatus);
             });
         });
@@ -32,14 +27,9 @@ export default class UserService {
             HttpService.post(`${UserService.baseURL()}/login`, {
                 username: user,
                 password: pass
-            }, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200 && data != undefined) {
-                    resolve(data);
-                }
-                else {
-                    reject('Error while registering user');
-                }
-            }, function(jqXHR, textStatus, error) {
+            }, function(data) {
+                resolve(data);
+            }, function(textStatus) {
                 reject(textStatus);
             });
         });

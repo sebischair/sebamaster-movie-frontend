@@ -11,19 +11,9 @@ export default class MovieService {
 
     static getMovies(){
        return new Promise((resolve, reject) => {
-           HttpService.get(this.baseURL(), function(data, textStatus, jqXHR) {
-               if(jqXHR.status == 200) {
-                   if(data != undefined) {
-                       resolve(data);
-                   }
-                   else {
-                       reject('Error while retrieving movies');
-                   }
-               }
-               else {
-                   reject(textStatus);
-               }
-           }, function(jqXHR, textStatus, error) {
+           HttpService.get(this.baseURL(), function(data) {
+               resolve(data);
+           }, function(textStatus) {
                reject(textStatus);
            });
        });
@@ -31,19 +21,14 @@ export default class MovieService {
 
     static getMovie(id) {
         return new Promise((resolve, reject) => {
-            HttpService.get(`${MovieService.baseURL()}/${id}`, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200) {
-                    if(data != undefined || Object.keys(data).length !== 0) {
-                        resolve(data);
-                    }
-                    else {
-                        reject('Error while retrieving movie');
-                    }
+            HttpService.get(`${MovieService.baseURL()}/${id}`, function(data) {
+                if(data != undefined || Object.keys(data).length !== 0) {
+                    resolve(data);
                 }
                 else {
-                    reject(textStatus);
+                    reject('Error while retrieving movie');
                 }
-            }, function(jqXHR, textStatus, error) {
+            }, function(textStatus) {
                 reject(textStatus);
             });
         });
@@ -51,14 +36,14 @@ export default class MovieService {
 
     static deleteMovie(id) {
         return new Promise((resolve, reject) => {
-            HttpService.remove(`${MovieService.baseURL()}/${id}`, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 200 || data.message != undefined) {
+            HttpService.remove(`${MovieService.baseURL()}/${id}`, function(data) {
+                if(data.message != undefined) {
                     resolve(data.message);
                 }
                 else {
                     reject('Error while deleting');
                 }
-            }, function(jqXHR, textStatus, error) {
+            }, function(textStatus) {
                 reject(textStatus);
             });
         });
@@ -66,15 +51,9 @@ export default class MovieService {
 
     static updateMovie(movie) {
         return new Promise((resolve, reject) => {
-            HttpService.put(`${this.baseURL()}/${movie._id}`, movie, function(data, textStatus, jqXHR) {
-                console.log(data);
-                if(jqXHR.status == 200 && data != undefined) {
-                    resolve(data);
-                }
-                else {
-                    reject('Error while updating movie');
-                }
-            }, function(jqXHR, textStatus, error) {
+            HttpService.put(`${this.baseURL()}/${movie._id}`, movie, function(data) {
+                resolve(data);
+            }, function(textStatus) {
                reject(textStatus);
             });
         });
@@ -89,14 +68,9 @@ export default class MovieService {
             original: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg"
         };
         return new Promise((resolve, reject) => {
-            HttpService.post(MovieService.baseURL(), movie, function(data, textStatus, jqXHR) {
-                if(jqXHR.status == 201 && data != undefined) {
-                    resolve(data);
-                }
-                else {
-                    reject('Error while creating movie');
-                }
-            }, function(jqXHR, textStatus, error) {
+            HttpService.post(MovieService.baseURL(), movie, function(data) {
+                resolve(data);
+            }, function(textStatus) {
                 reject(textStatus);
             });
         });

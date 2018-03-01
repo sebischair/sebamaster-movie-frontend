@@ -1,7 +1,5 @@
 "use strict";
 
-import $ from 'jquery';
-
 export default class HttpService {
     constructor() {
     }
@@ -9,120 +7,131 @@ export default class HttpService {
     static apiURL() {return "http://localhost:3000"; }
 
     static get(url, onSuccess, onError) {
-        $.ajax({
-            url: url,
-            type: 'GET',
-            beforeSend: function(jqXHR, settings) {
-                if(settings.url.indexOf(HttpService.apiURL()) === 0) {
-                    let token = window.localStorage['jwtToken'];
+        let token = window.localStorage['jwtToken'];
+        let header = new Headers();
+        if(token) {
+            header.append('Authorization', `JWT ${token}`);
+        }
 
-                    if(token) {
-                        jqXHR.setRequestHeader('Authorization', 'JWT ' + token);
-                    }
-                }
-            },
-            success: function(data, textStatus, jqXHR) {
-
-                if(data.hasOwnProperty('token')) {
-                    window.localStorage['jwtToken'] = data.token;
-                }
-                onSuccess(data, textStatus, jqXHR);
-            },
-            error: function(jqXHR, textStatus, error) {
-                if(HttpService.checkIfUnauthorized(jqXHR)) {
-                    window.location = "/#login";
-                }
-                onError(jqXHR, textStatus, error);
+        fetch(url, {
+            method: 'GET',
+            headers: header
+        }).then((resp) => {
+            if(resp.ok) {
+                return resp.json();
             }
+            else if(this.checkIfUnauthorized(resp)) {
+                window.location = "/#login";
+            }
+            else {
+                resp.json().then((json) => {
+                    onError(json.error);
+                });
+            }
+        }).then((resp) => {
+            if(resp.hasOwnProperty('token')) {
+                window.localStorage['jwtToken'] = resp.token;
+            }
+            onSuccess(resp);
+        }).catch((e) => {
+            onError(e.message);
         });
     }
 
     static put(url, data, onSuccess, onError) {
-        $.ajax({
-            url: url,
-            type: 'PUT',
-            data: data,
-            beforeSend: function(jqXHR, settings) {
-                if(settings.url.indexOf(HttpService.apiURL()) === 0) {
-                    let token = window.localStorage['jwtToken'];
+        let token = window.localStorage['jwtToken'];
+        let header = new Headers();
+        if(token) {
+            header.append('Authorization', `JWT ${token}`);
+        }
+        header.append('Content-Type', 'application/json');
 
-                    if(token) {
-                        jqXHR.setRequestHeader('Authorization', 'JWT ' + token);
-                    }
-                }
-            },
-            success: function(data, textStatus, jqXHR) {
-
-                if(data.hasOwnProperty('token')) {
-                    window.localStorage['jwtToken'] = data.token;
-                }
-                onSuccess(data, textStatus, jqXHR);
-            },
-            error: function(jqXHR, textStatus, error) {
-                if(HttpService.checkIfUnauthorized(jqXHR)) {
-                    window.location = "/#login";
-                }
-                onError(jqXHR, textStatus, error);
+        fetch(url, {
+            method: 'PUT',
+            headers: header,
+            body: JSON.stringify(data)
+        }).then((resp) => {
+            if(resp.ok) {
+                return resp.json();
             }
+            else if(this.checkIfUnauthorized(resp)) {
+                window.location = "/#login";
+            }
+            else {
+                resp.json().then((json) => {
+                    onError(json.error);
+                });
+            }
+        }).then((resp) => {
+            if(resp.hasOwnProperty('token')) {
+                window.localStorage['jwtToken'] = resp.token;
+            }
+            onSuccess(resp);
+        }).catch((e) => {
+            onError(e.message);
         });
     }
 
     static post(url, data, onSuccess, onError) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            beforeSend: function(jqXHR, settings) {
-                if(settings.url.indexOf(HttpService.apiURL()) === 0) {
-                    let token = window.localStorage['jwtToken'];
+        let token = window.localStorage['jwtToken'];
+        let header = new Headers();
+        if(token) {
+            header.append('Authorization', `JWT ${token}`);
+        }
+        header.append('Content-Type', 'application/json');
 
-                    if(token) {
-                        jqXHR.setRequestHeader('Authorization', 'JWT ' + token);
-                    }
-                }
-            },
-            success: function(data, textStatus, jqXHR) {
-
-                if(data.hasOwnProperty('token')) {
-                    window.localStorage['jwtToken'] = data.token;
-                }
-                onSuccess(data, textStatus, jqXHR);
-            },
-            error: function(jqXHR, textStatus, error) {
-                if(HttpService.checkIfUnauthorized(jqXHR)) {
-                    window.location = "/#login";
-                }
-                onError(jqXHR, textStatus, error);
+        fetch(url, {
+            method: 'POST',
+            headers: header,
+            body: JSON.stringify(data)
+        }).then((resp) => {
+            if(resp.ok) {
+                return resp.json();
             }
+            else if(this.checkIfUnauthorized(resp)) {
+                window.location = "/#login";
+            }
+            else {
+                resp.json().then((json) => {
+                    onError(json.error);
+                });
+            }
+        }).then((resp) => {
+            if(resp.hasOwnProperty('token')) {
+                window.localStorage['jwtToken'] = resp.token;
+            }
+            onSuccess(resp);
+        }).catch((e) => {
+            onError(e.message);
         });
     }
 
     static remove(url, onSuccess, onError) {
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            beforeSend: function(jqXHR, settings) {
-                if(settings.url.indexOf(HttpService.apiURL()) === 0) {
-                    let token = window.localStorage['jwtToken'];
+        let token = window.localStorage['jwtToken'];
+        let header = new Headers();
+        if(token) {
+            header.append('Authorization', `JWT ${token}`);
+        }
 
-                    if(token) {
-                        jqXHR.setRequestHeader('Authorization', 'JWT ' + token);
-                    }
-                }
-            },
-            success: function(data, textStatus, jqXHR) {
-
-                if(data.hasOwnProperty('token')) {
-                    window.localStorage['jwtToken'] = data.token;
-                }
-                onSuccess(data, textStatus, jqXHR);
-            },
-            error: function(jqXHR, textStatus, error) {
-                if(HttpService.checkIfUnauthorized(jqXHR)) {
-                    window.location = "/#login";
-                }
-                onError(jqXHR, textStatus, error);
+        fetch(url, {
+            method: 'DELETE',
+            headers: header
+        }).then((resp) => {
+            if(resp.ok) {
+                return resp.json();
             }
+            else if(this.checkIfUnauthorized(resp)) {
+                window.location = "/#login";
+            }
+            else {
+                resp.json().then((json) => {
+                    onError(json.error);
+                });
+            }
+        }).then((resp) => {
+            onSuccess(resp);
+        }).catch((e) => {
+            onError(e.message);
         });
     }
 
