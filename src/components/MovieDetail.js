@@ -9,9 +9,6 @@ import Page from './Page';
 import UserService from '../services/UserService';
 
 
-const style = { maxWidth: 500 };
-
-
 export class MovieDetail extends React.Component {
 
     constructor(props) {
