@@ -32,16 +32,19 @@
     "webpack-merge": "4.1.0"
   },
   "dependencies": {
+    "file-loader": "^1.1.11",
+    "image-webpack-loader": "^4.3.0",
     "react": "16.2.0",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "16.2.0",
-    "react-router-dom": "4.2.2",
     "react-md": "1.2.11",
-    "webfontloader": "1.6.28",
-    "styled-components": "3.1.6"
+    "react-router-dom": "4.2.2",
+    "styled-components": "3.1.6",
+    "webfontloader": "1.6.28"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
-    "start": "webpack-dev-server --open 'Google Chrome' --config webpack.dev.js"
+    "start": "webpack-dev-server --config webpack.dev.js"
   }
 }
