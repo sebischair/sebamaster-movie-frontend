@@ -3,9 +3,12 @@
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
-import { MovieListView } from './views/MovieListView';
-import { MovieDetailView }   from './views/MovieDetailView';
-import { MovieFormView }   from './views/MovieFormView';
+import { HomeView } from "./views/HomeView";
+import { MyEventsView } from "./views/MyEventsView";
+import { JoinEventView } from "./views/JoinEventView";
+import { CreateEventView } from "./views/CreateEventView";
+import { AddLocationView } from "./views/AddLocationView";
+
 import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
@@ -18,26 +21,39 @@ export default class App extends React.Component {
         super(props);
 
         this.state = {
-            title: 'Movie Example App',
+            title: 'Meet2Sport',
             routes: [
-                { component: MovieListView , path: '/', exact: true},
-                { component: MovieDetailView , path: '/show/:id'},
+                { component: HomeView , path: '/', exact: true},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
-                            return (<MovieFormView {... props} />)
+                            return (<MyEventsView {... props} />)
                         }
                         else {
                             return (<Redirect to={'/login'}/>)
-                        }} , path: '/edit/:id'},
+                        }} , path: '/myevents'},
                 { render: (props) => {
                     if(UserService.isAuthenticated()) {
-                        return (<MovieFormView {... props} />)
+                        return (<JoinEventView {... props} />)
                     }
                     else {
                         return (<Redirect to={'/login'}/>)
-                    }}, path: '/add',},
+                    }}, path: '/joinevent',},
+                { render: (props) => {
+                        if(UserService.isAuthenticated()) {
+                            return (<CreateEventView {... props} />)
+                        }
+                        else {
+                            return (<Redirect to={'/login'}/>)
+                        }}, path: '/createevent',},
+                { render: (props) => {
+                        if(UserService.isAuthenticated()) {
+                            return (<AddLocationView {... props} />)
+                        }
+                        else {
+                            return (<Redirect to={'/login'}/>)
+                        }}, path: '/addlocation',},
                 { component: UserLoginView, path: '/login'},
-                { component: UserSignupView, path: '/register'}
+                { component: UserSignupView, path: '/register'},
             ]
         };
     }
