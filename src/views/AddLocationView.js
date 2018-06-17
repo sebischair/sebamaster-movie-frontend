@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { PageHeader } from 'react-bootstrap';
+import { PageHeader, Grid, Row, Col } from 'react-bootstrap';
 
 import Page from '../components/Page';
 
@@ -13,7 +13,7 @@ export class AddLocationView extends React.Component {
         super(props);
     }
 
-    componentWillMount(){
+    componentWillMount() {
 
     }
 
@@ -23,6 +23,20 @@ export class AddLocationView extends React.Component {
                 <PageHeader>
                     Add Location <small>(Work in progress)</small>
                 </PageHeader>
+
+                <Grid>
+                    <Row className="show-grid">
+                        <Col md={3}>
+                            1
+                        </Col>
+                        <Col md={3}>
+                            2
+                        </Col>
+                        <Col md={3}>
+                            3
+                        </Col>
+                    </Row>
+                </Grid>
             </Page>
         );
     }
