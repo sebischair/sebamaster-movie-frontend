@@ -24,7 +24,7 @@ export default class LocationMap extends React.PureComponent {
     onFirstPlaceChanged(place) {
         if (place) {
             const sportLocation = {
-                name: place.name,
+                name: place.formatted_address.includes(place.name) ? place.formatted_address: place.name + ' (' + place.formatted_address + ')',
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng()
             }
@@ -80,7 +80,8 @@ export default class LocationMap extends React.PureComponent {
 
                             this.setState({
                                 center: nextCenter,
-                                markers: nextMarkers,
+                                //only the first marker
+                                markers: [nextMarkers[0]],
                             });
                             return places[0];
                         },

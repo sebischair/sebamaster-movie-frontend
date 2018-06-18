@@ -7,6 +7,7 @@ import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, 
 import Page from '../components/Page';
 import LocationMap from '../components/LocationMap';
 import ActivityService from '../services/ActivityService';
+import SportPlaceService from '../services/SportPlaceService'
 
 
 export class AddLocationView extends React.Component {
@@ -18,12 +19,14 @@ export class AddLocationView extends React.Component {
                 name: '',
                 openingHours: '',
                 description: '',
-                location: {
-                    name: '',
+                coordinates: {
+                    longitude: Number.undefined,
+                    latitude: Number.undefined,
                 },
                 activities: [],
             },
-            activities: undefined
+            activities: undefined,
+            locationName: ''
         };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleOpeningHoursChange = this.handleOpeningHoursChange.bind(this);
@@ -36,10 +39,6 @@ export class AddLocationView extends React.Component {
     }
 
     componentWillMount() {
-        //Mocked
-        //this.state.activities = ["Running", "Hiking"]
-
-        // Load activities
         ActivityService.getActivities().then((data) => {
             data.sort();
             this.setState({ activities: data})
@@ -82,6 +81,7 @@ export class AddLocationView extends React.Component {
 
     handleSubmit(e) {
         console.log(this.state.form)
+        SportPlaceService.createSportPlace(this.state.form);
     }
 
     renderActivities() {
@@ -96,13 +96,19 @@ export class AddLocationView extends React.Component {
 
     onLocationSet(location) {
         let form = this.state.form;
-        form.location = location;
-        this.setState({ form: form });
+        form.coordinates.latitude = location.latitude;
+        form.coordinates.longitude = location.longitude;
+        this.setState(
+            {
+                form: form,
+                locationName: location.name
+            }
+        );
     }
 
     isEverythingFilled() {
         const state = this.state;
-        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.activities.length > 0 && state.form.location.name != '';
+        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.activities.length > 0 && state.form.coordinates.longitude != undefined && state.form.coordinates.latitude != undefined;
     }
 
     render() {
@@ -165,7 +171,7 @@ export class AddLocationView extends React.Component {
                                                     <InputGroup>
                                                         <FormControl
                                                             type="text"
-                                                            value={this.state.form.location.name}
+                                                            value={this.state.locationName}
                                                             placeholder="Location"
                                                             disabled={true}>
                                                         </FormControl>
