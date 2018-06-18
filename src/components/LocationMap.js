@@ -14,10 +14,22 @@ const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
 
 
-export default class LocationMap extends React.Component {
+export default class LocationMap extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        this.onFirstPlaceChanged = this.onFirstPlaceChanged.bind(this);
+    }
+
+    onFirstPlaceChanged(place) {
+        if (place) {
+            const sportLocation = {
+                name: place.name,
+                latitude: place.geometry.location.lat(),
+                longitude: place.geometry.location.lng()
+            }
+            this.props.onLocationSet(sportLocation);
+        }
     }
 
     render() {
@@ -35,7 +47,7 @@ export default class LocationMap extends React.Component {
                     this.setState({
                         bounds: null,
                         center: {
-                            lat: 41.9, lng: -87.624
+                            lat: 48.137154, lng: 11.576124
                         },
                         markers: [],
                         onMapMounted: ref => {
@@ -70,7 +82,7 @@ export default class LocationMap extends React.Component {
                                 center: nextCenter,
                                 markers: nextMarkers,
                             });
-                            // refs.map.fitBounds(bounds);
+                            return places[0];
                         },
                     })
                 },
@@ -81,18 +93,14 @@ export default class LocationMap extends React.Component {
             <GoogleMap
                 ref={props.onMapMounted}
                 defaultZoom={13}
-                center={{
-                    //Munich
-                    lat : 48.137154,
-                    lng : 11.576124
-                }}
+                center={props.center}
                 onBoundsChanged={props.onBoundsChanged}
             >
                 <SearchBox
                     ref={props.onSearchBoxMounted}
                     bounds={props.bounds}
                     controlPosition={google.maps.ControlPosition.TOP_LEFT}
-                    onPlacesChanged={props.onPlacesChanged}
+                    onPlacesChanged={e => this.onFirstPlaceChanged(props.onPlacesChanged())}
                 >
                     <input
                         type="text"

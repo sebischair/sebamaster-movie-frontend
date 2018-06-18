@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox } from 'react-bootstrap';
+import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox, HelpBlock } from 'react-bootstrap';
 
 import Page from '../components/Page';
 import LocationMap from '../components/LocationMap';
@@ -17,6 +17,9 @@ export class AddLocationView extends React.Component {
                 name: '',
                 openingHours: '',
                 description: '',
+                location: {
+                    name: ''
+                },
                 activities: [],
             },
             activities: undefined
@@ -27,6 +30,8 @@ export class AddLocationView extends React.Component {
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.renderActivities = this.renderActivities.bind(this);
+
+        this.onLocationSet = this.onLocationSet.bind(this);
     }
 
     componentWillMount() {
@@ -75,6 +80,13 @@ export class AddLocationView extends React.Component {
             });
         }
         return result;
+    }
+
+    onLocationSet(location) {
+        console.log(location);
+        let form = this.state.form;
+        form.location = location;
+        this.setState({ form: form });
     }
 
     render() {
@@ -134,7 +146,18 @@ export class AddLocationView extends React.Component {
                                             <Col xs={12} sm={12} md={12} lg={6}>
                                                 <FormGroup controlId="setLocation">
                                                     <ControlLabel>Location</ControlLabel>
-                                                    <LocationMap></LocationMap>
+                                                    <InputGroup>
+                                                        <FormControl
+                                                            type="text"
+                                                            value={this.state.form.location.name}
+                                                            placeholder="Location">
+                                                        </FormControl>
+                                                        <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
+
+                                                    </InputGroup>
+                                                    <HelpBlock>The location has to be selected via the map.</HelpBlock>
+                                                    <br></br>
+                                                    <LocationMap onLocationSet={this.onLocationSet}></LocationMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
