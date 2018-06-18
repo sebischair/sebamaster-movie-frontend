@@ -92,52 +92,50 @@ export class AddLocationView extends React.Component {
                                     <Panel.Title componentClass="h3"><Glyphicon glyph={'plus'} /> Properties</Panel.Title>
                                 </Panel.Heading>
                                 <Panel.Body>
-                                    <Grid>
-                                        <form>
-                                            <Row>
-                                                <Col xs={12} sm={12} md={6}>
-                                                    <FormGroup controlId="setName">
-                                                        <ControlLabel>Name</ControlLabel>
-                                                        <FormControl
-                                                            type="text"
-                                                            value={this.state.form.name}
-                                                            placeholder="Name"
-                                                            onChange={this.handleNameChange}>
-                                                        </FormControl>
-                                                    </FormGroup>
-                                                    <FormGroup controlId="setOpeningHours">
-                                                        <ControlLabel>Opening Hours</ControlLabel>
-                                                        <FormControl
-                                                            type="text"
-                                                            value={this.state.form.openingHours}
-                                                            placeholder="Opening Hours"
-                                                            onChange={this.handleOpeningHoursChange}>
-                                                        </FormControl>
-                                                    </FormGroup>
-                                                    <FormGroup controlId="setDescription">
-                                                        <ControlLabel>Description</ControlLabel>
-                                                        <FormControl
-                                                            componentClass="textarea"
-                                                            rows={5}
-                                                            value={this.state.form.description}
-                                                            placeholder="Description"
-                                                            onChange={this.handleDescriptionChange}>
-                                                        </FormControl>
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col xs={12} sm={12} md={6}>
-                                                    <FormGroup controlId="setActivities">
-                                                        <ControlLabel>Activities</ControlLabel>
-                                                        {this.state.activities && this.renderActivities()}
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col xs={12} sm={12}>
-                                                    <Button type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
-                                                    {' '}
-                                                </Col>
-                                            </Row>
-                                        </form>
-                                    </Grid>
+                                    <form>
+                                        <Row>
+                                            <Col xs={12} sm={12} md={6}>
+                                                <FormGroup controlId="setName">
+                                                    <ControlLabel>Name</ControlLabel>
+                                                    <FormControl
+                                                        type="text"
+                                                        value={this.state.form.name}
+                                                        placeholder="Name"
+                                                        onChange={this.handleNameChange}>
+                                                    </FormControl>
+                                                </FormGroup>
+                                                <FormGroup controlId="setOpeningHours">
+                                                    <ControlLabel>Opening Hours</ControlLabel>
+                                                    <FormControl
+                                                        type="text"
+                                                        value={this.state.form.openingHours}
+                                                        placeholder="Opening Hours"
+                                                        onChange={this.handleOpeningHoursChange}>
+                                                    </FormControl>
+                                                </FormGroup>
+                                                <FormGroup controlId="setDescription">
+                                                    <ControlLabel>Description</ControlLabel>
+                                                    <FormControl
+                                                        componentClass="textarea"
+                                                        rows={5}
+                                                        value={this.state.form.description}
+                                                        placeholder="Description"
+                                                        onChange={this.handleDescriptionChange}>
+                                                    </FormControl>
+                                                </FormGroup>
+                                            </Col>
+                                            <Col xs={12} sm={12} md={6}>
+                                                <FormGroup controlId="setActivities">
+                                                    <ControlLabel>Activities</ControlLabel>
+                                                    {this.state.activities && this.renderActivities()}
+                                                </FormGroup>
+                                            </Col>
+                                            <Col xs={12} sm={12}>
+                                                <Button type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
+                                                {' '}
+                                            </Col>
+                                        </Row>
+                                    </form>
                                 </Panel.Body>
                             </Panel>
                         </Col>
