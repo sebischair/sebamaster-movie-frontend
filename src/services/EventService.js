@@ -1,6 +1,7 @@
 "use strict";
 
 import HttpService from "./HttpService";
+import UserService from "./UserService";
 
 export default class EventService {
 
@@ -49,6 +50,34 @@ export default class EventService {
                     reject(textStatus);
                 });
         });
+    }
+
+    static joinEvent(event){
+
+        let user = UserService.getCurrentUser();
+        let userID = user.id;
+
+        return new Promise((resolve, reject) => {
+            HttpService.put(`${EventService.baseURL()}` + "/event/join/" + event._id,
+                {participant : userID},
+                function(data) {
+                    resolve(data);
+                }, function(textStatus) {
+                    reject(textStatus);
+                });
+        });
+    }
+
+    static checkParticipation(event){
+        let user = UserService.getCurrentUser();
+        let userID = user.id;
+
+        for(let i = 0; i < event.participants.length; i++){
+            if(userID === event.participants[i]._id){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

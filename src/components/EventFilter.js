@@ -130,7 +130,7 @@ class EventFilter extends React.Component {
             if (this.state.filter.end_time) {
                 let split = this.state.filter.end_time.split(':');
                 if (split.length == 2) {
-                    filter.end.setHours(split[0], split[1], 0);
+                    filter.end.setHours(split[0], split[1], 59);
                 }
             }
         }

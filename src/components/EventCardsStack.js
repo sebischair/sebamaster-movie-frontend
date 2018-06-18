@@ -8,15 +8,33 @@ export default class EventCardStack extends React.Component {
         super(props);
 
         this.createEventCards = this.createEventCards.bind(this);
+        this.sortEvents = this.sortEvents.bind(this);
+    }
+
+    sortEvents(events){
+        if(events && events.length > 0){
+            events.sort((a,b)=>{
+                let aDate = new Date(a.start);
+                let bDate = new Date(b.start);
+                if(aDate < bDate){
+                    return -1;
+                } else {
+                    return 1;
+                }
+            });
+        }
+        return events;
     }
 
     createEventCards(){
         let cards = [];
-        this.props.events.forEach((event) => {
-            cards.push(<Col xs={12} sm={4} md={3}>
-                <EventCard event={event} showEventDetails = {this.props.showEventDetails}/>
+        let events = this.sortEvents(this.props.events);
+        for(let i = 0; i<events.length; i++){
+            let event = events[i];
+            cards.push(<Col xs={12} sm={4} md={3}  key={i}>
+                <EventCard event={event} showEventDetails = {this.props.showEventDetails} joinEvent = {this.props.joinEvent}/>
             </Col>);
-        });
+        }
         return cards;
     }
 
