@@ -6,6 +6,7 @@ import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, 
 
 import Page from '../components/Page';
 import LocationMap from '../components/LocationMap';
+import ActivityService from '../services/ActivityService';
 
 
 export class AddLocationView extends React.Component {
@@ -18,7 +19,7 @@ export class AddLocationView extends React.Component {
                 openingHours: '',
                 description: '',
                 location: {
-                    name: ''
+                    name: '',
                 },
                 activities: [],
             },
@@ -30,13 +31,24 @@ export class AddLocationView extends React.Component {
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.renderActivities = this.renderActivities.bind(this);
-
         this.onLocationSet = this.onLocationSet.bind(this);
+        this.isEverythingFilled = this.isEverythingFilled.bind(this);
     }
 
     componentWillMount() {
         //Mocked
-        this.state.activities = ["Running", "Hiking"]
+        //this.state.activities = ["Running", "Hiking"]
+
+        // Load activities
+        ActivityService.getActivities().then((data) => {
+            data.sort();
+            this.setState({ activities: data})
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                error: e
+            });
+        });
     }
 
     handleNameChange(e) {
@@ -83,10 +95,14 @@ export class AddLocationView extends React.Component {
     }
 
     onLocationSet(location) {
-        console.log(location);
         let form = this.state.form;
         form.location = location;
         this.setState({ form: form });
+    }
+
+    isEverythingFilled() {
+        const state = this.state;
+        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.activities.length > 0 && state.form.location.name != '';
     }
 
     render() {
@@ -130,7 +146,7 @@ export class AddLocationView extends React.Component {
                                                     <ControlLabel>Description</ControlLabel>
                                                     <FormControl
                                                         componentClass="textarea"
-                                                        rows={5}
+                                                        rows={10}
                                                         value={this.state.form.description}
                                                         placeholder="Description"
                                                         onChange={this.handleDescriptionChange}>
@@ -150,10 +166,10 @@ export class AddLocationView extends React.Component {
                                                         <FormControl
                                                             type="text"
                                                             value={this.state.form.location.name}
-                                                            placeholder="Location">
+                                                            placeholder="Location"
+                                                            disabled={true}>
                                                         </FormControl>
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
-
                                                     </InputGroup>
                                                     <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <br></br>
@@ -161,7 +177,7 @@ export class AddLocationView extends React.Component {
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
-                                                <Button type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
+                                                <Button disabled={!this.isEverythingFilled()} type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
                                                 {' '}
                                             </Col>
                                         </Row>
