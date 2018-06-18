@@ -5,6 +5,7 @@ import React from 'react';
 import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox } from 'react-bootstrap';
 
 import Page from '../components/Page';
+import LocationMap from '../components/LocationMap';
 
 
 export class AddLocationView extends React.Component {
@@ -94,7 +95,7 @@ export class AddLocationView extends React.Component {
                                 <Panel.Body>
                                     <form>
                                         <Row>
-                                            <Col xs={12} sm={12} md={6}>
+                                            <Col xs={12} sm={12} md={8} lg={4}>
                                                 <FormGroup controlId="setName">
                                                     <ControlLabel>Name</ControlLabel>
                                                     <FormControl
@@ -124,10 +125,16 @@ export class AddLocationView extends React.Component {
                                                     </FormControl>
                                                 </FormGroup>
                                             </Col>
-                                            <Col xs={12} sm={12} md={6}>
+                                            <Col xs={12} sm={12} md={4} lg={2}>
                                                 <FormGroup controlId="setActivities">
                                                     <ControlLabel>Activities</ControlLabel>
                                                     {this.state.activities && this.renderActivities()}
+                                                </FormGroup>
+                                            </Col>
+                                            <Col xs={12} sm={12} md={12} lg={6}>
+                                                <FormGroup controlId="setLocation">
+                                                    <ControlLabel>Location</ControlLabel>
+                                                    <LocationMap></LocationMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
