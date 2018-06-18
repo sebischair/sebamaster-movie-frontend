@@ -20,22 +20,13 @@ export class AddLocationView extends React.Component {
     render() {
         return (
             <Page>
-                <PageHeader>
-                    Add Location <small>(Work in progress)</small>
-                </PageHeader>
-
                 <Grid>
-                    <Row className="show-grid">
-                        <Col md={3}>
-                            1
-                        </Col>
-                        <Col md={3}>
-                            2
-                        </Col>
-                        <Col md={3}>
-                            3
-                        </Col>
+                    <Row>
+                        <Col xs={12} sm={12}><PageHeader style={{ marginTop: '10px', }}>
+                            <small>Add Location</small>
+                        </PageHeader></Col>
                     </Row>
+
                 </Grid>
             </Page>
         );
