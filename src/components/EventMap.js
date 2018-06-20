@@ -21,7 +21,7 @@ export default class EventMap extends React.Component {
             for (let i = 0; i < this.props.events.length; i++) {
                 let event = this.props.events[i];
                 markers.push(<Marker
-                    position={{lat: event.sportPlace.coordinates.latitude, lng: event.sportPlace.coordinates.longitude}}
+                    position={{lat: event.sportPlace.loc.coordinates[1], lng: event.sportPlace.loc.coordinates[0]}}
                     key={i}
                     onClick = {() => this.props.showEventDetails(event)}
                     label = {event.activity}
@@ -40,8 +40,8 @@ export default class EventMap extends React.Component {
             lat = 0;
             lng = 0;
             this.props.events.forEach((event) => {
-                lat += event.sportPlace.coordinates.latitude;
-                lng += event.sportPlace.coordinates.longitude;
+                lat += event.sportPlace.loc.coordinates[1];
+                lng += event.sportPlace.loc.coordinates[0];
             });
             lat = lat / this.props.events.length;
             lng = lng / this.props.events.length;

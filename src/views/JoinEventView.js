@@ -11,6 +11,7 @@ import EventService from '../services/EventService';
 import EventCardStack from "../components/EventCardsStack";
 import EventDetailsModal from "../components/EventDetailsModal";
 import InfoModal from "../components/InfoModal";
+import UserService from "../services/UserService";
 
 
 export class JoinEventView extends React.Component {
@@ -43,6 +44,7 @@ export class JoinEventView extends React.Component {
     }
 
     loadEvents(filter){
+        filter.noParticipant = UserService.getCurrentUser().id;
         this.setState({filter : filter});
         EventService.getEvents(filter).then((data) => {
             this.setState({events : data});
@@ -107,8 +109,10 @@ export class JoinEventView extends React.Component {
                         </PageHeader></Col>
                     </Row>
                     <Row>
-                        <Col xs={12} sm={12} md={4}><EventFilter onFilterSubmit = {this.loadEvents} /></Col>
-                        <Col xsHidden sm={12} md={8}><EventMap events = {this.state.events} showEventDetails = {this.showEventDetails}/></Col>
+                        <Col xs={12} sm={4} md={3}><EventFilter onFilterSubmit = {this.loadEvents} /></Col>
+                        <Col xsHidden sm={8} md={9}>
+                            <EventMap events = {this.state.events} showEventDetails = {this.showEventDetails}/>
+                        </Col>
                     </Row>
                     <Row>
                         <Col xs={12} sm={12}><EventCardStack events = {this.state.events} showEventDetails = {this.showEventDetails} joinEvent={this.joinEvent}/></Col>

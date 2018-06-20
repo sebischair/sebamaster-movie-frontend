@@ -16,14 +16,19 @@ export default class EventService {
         if(filter.activity)
             queryParams += "activity=" + filter.activity + "&";
         if(filter.location){
-            // Need to query for sportsplace???
-            // queryParams += "location=" + filter.location + "&";
+            queryParams += "location=" + filter.location + "&";
         }
         if(filter.start) {
             queryParams += "start=" + filter.start.toISOString() + "&";
         }
         if(filter.end) {
             queryParams += "end=" + filter.end.toISOString() + "&";
+        }
+        if(filter.participant) {
+            queryParams += "participant=" + filter.participant + "&";
+        }
+        if(filter.noParticipant) {
+            queryParams += "noparticipant=" + filter.noParticipant + "&";
         }
         return queryParams;
     };
