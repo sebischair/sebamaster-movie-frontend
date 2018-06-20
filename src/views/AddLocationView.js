@@ -7,7 +7,8 @@ import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, 
 import Page from '../components/Page';
 import LocationMap from '../components/LocationMap';
 import ActivityService from '../services/ActivityService';
-import SportPlaceService from '../services/SportPlaceService'
+import SportPlaceService from '../services/SportPlaceService';
+import InfoModal from '../components/InfoModal';
 
 
 export class AddLocationView extends React.Component {
@@ -19,14 +20,19 @@ export class AddLocationView extends React.Component {
                 name: '',
                 openingHours: '',
                 description: '',
-                coordinates: {
-                    longitude: Number.undefined,
-                    latitude: Number.undefined,
+                loc: {
+                    type: 'Point',
+                    coordinates: []
                 },
                 activities: [],
             },
             activities: undefined,
-            locationName: ''
+            locationName: '',
+            info: {
+                showInfo: false,
+                body: undefined,
+                type: undefined
+            },
         };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleOpeningHoursChange = this.handleOpeningHoursChange.bind(this);
@@ -36,12 +42,13 @@ export class AddLocationView extends React.Component {
         this.renderActivities = this.renderActivities.bind(this);
         this.onLocationSet = this.onLocationSet.bind(this);
         this.isEverythingFilled = this.isEverythingFilled.bind(this);
+        this.setModal = this.setModal.bind(this);
     }
 
     componentWillMount() {
         ActivityService.getActivities().then((data) => {
             data.sort();
-            this.setState({ activities: data})
+            this.setState({ activities: data })
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -80,8 +87,13 @@ export class AddLocationView extends React.Component {
     }
 
     handleSubmit(e) {
-        console.log(this.state.form)
-        SportPlaceService.createSportPlace(this.state.form);
+        const sportPlace = this.state.form;
+        SportPlaceService.createSportPlace(sportPlace).then((data) => {
+            this.setModal(true, <div><h4>Successfully added location!</h4><p>{sportPlace.name}</p></div>, "success");
+        }).catch((e) => {
+            console.log(e);
+            this.setModal(true, e, "danger");
+        });
     }
 
     renderActivities() {
@@ -96,8 +108,7 @@ export class AddLocationView extends React.Component {
 
     onLocationSet(location) {
         let form = this.state.form;
-        form.coordinates.latitude = location.latitude;
-        form.coordinates.longitude = location.longitude;
+        form.loc.coordinates = [location.longitude, location.latitude];
         this.setState(
             {
                 form: form,
@@ -108,12 +119,22 @@ export class AddLocationView extends React.Component {
 
     isEverythingFilled() {
         const state = this.state;
-        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.activities.length > 0 && state.form.coordinates.longitude != undefined && state.form.coordinates.latitude != undefined;
+        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.activities.length > 0 && state.form.loc.coordinates.length == 2;
+    }
+
+    setModal(showInfo, body, type) {
+        let info = this.state.info;
+        info.showInfo = showInfo;
+        info.body = body;
+        info.type = type;
+        this.setState({ info: info });
     }
 
     render() {
         return (
             <Page>
+                {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
+                    type={this.state.info.type} handleClose={ () => {this.setModal(false)}} />}
                 <Grid>
                     <Row>
                         <Col xs={12} sm={12}><PageHeader style={{ marginTop: '10px', }}>
