@@ -11,6 +11,14 @@ export default class EventCardStack extends React.Component {
         this.sortEvents = this.sortEvents.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        if(_.isEqual(nextProps.events, this.props.events)){
+            return false;
+        }
+        return true;
+    }
+
+
     sortEvents(events){
         if(events && events.length > 0){
             events.sort((a,b)=>{

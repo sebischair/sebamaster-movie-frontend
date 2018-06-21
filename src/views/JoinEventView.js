@@ -28,11 +28,17 @@ export class JoinEventView extends React.Component {
                 body : undefined,
                 type : undefined
             },
-            filter : undefined
+            filter : undefined,
+            center : {
+                lat : undefined,
+                lng : undefined
+            },
+            radius : undefined
         };
 
         this.loadEvents = this.loadEvents.bind(this);
         this.joinEvent = this.joinEvent.bind(this);
+        this.updateCenter = this.updateCenter.bind(this);
         this.showInfoModal = this.showInfoModal.bind(this);
         this.hideInfoModal = this.hideInfoModal.bind(this);
         this.showEventDetails= this.showEventDetails.bind(this);
@@ -95,6 +101,10 @@ export class JoinEventView extends React.Component {
         });
     }
 
+    updateCenter(loc, rad){
+        this.setState({center : loc, radius : rad});
+    }
+
     render() {
         return (
             <Page>
@@ -109,9 +119,9 @@ export class JoinEventView extends React.Component {
                         </PageHeader></Col>
                     </Row>
                     <Row>
-                        <Col xs={12} sm={4} md={3}><EventFilter onFilterSubmit = {this.loadEvents} /></Col>
-                        <Col xsHidden sm={8} md={9}>
-                            <EventMap events = {this.state.events} showEventDetails = {this.showEventDetails}/>
+                        <Col xs={12} sm={12} md={3}><EventFilter onFilterSubmit = {this.loadEvents} locationCallback = {this.updateCenter} /></Col>
+                        <Col xsHidden sm={12} md={9}>
+                            <EventMap events = {this.state.events} center = {this.state.center} radius = {this.state.radius} showEventDetails = {this.showEventDetails}/>
                         </Col>
                     </Row>
                     <Row>

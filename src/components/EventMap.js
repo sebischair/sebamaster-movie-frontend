@@ -1,6 +1,7 @@
-import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps";
+import {withScriptjs, withGoogleMap, GoogleMap, Marker, Circle} from "react-google-maps";
 import React from "react";
 import {Button, Glyphicon, ListGroup, ListGroupItem, Panel} from "react-bootstrap";
+const _ = require('lodash');
 
 export default class EventMap extends React.Component {
 
@@ -12,7 +13,6 @@ export default class EventMap extends React.Component {
         };
 
         this.createMarkers = this.createMarkers.bind(this);
-        this.calculateCenter = this.calculateCenter.bind(this);
     }
 
     createMarkers(){
@@ -31,30 +31,26 @@ export default class EventMap extends React.Component {
         return markers;
     }
 
-    calculateCenter(){
-        // Default: Munich
-        let lat = 48.137154;
-        let lng = 11.576124;
-        // Center as average of all locations of events
-        if(this.props.events && this.props.events.length > 0){
-            lat = 0;
-            lng = 0;
-            this.props.events.forEach((event) => {
-                lat += event.sportPlace.loc.coordinates[1];
-                lng += event.sportPlace.loc.coordinates[0];
-            });
-            lat = lat / this.props.events.length;
-            lng = lng / this.props.events.length;
+    shouldComponentUpdate(nextProps, nextState){
+        if(_.isEqual(nextProps.center, this.props.center) && _.isEqual(nextProps.events, this.props.events) && nextProps.radius === this.props.radius){
+            return false;
         }
-        return {lat : lat, lng : lng};
+        return true;
     }
 
     render() {
         const FinalMap = withScriptjs(withGoogleMap(props =>
             <GoogleMap
                 defaultZoom={13}
-                defaultCenter={this.calculateCenter()}
+                defaultCenter={this.props.center}
             >
+                <Circle center={this.props.center} radius={this.props.radius*1000}
+                    options = {{clickable : false,
+                        fillOpacity : 0.15,
+                        fillColor : "#1E90FF",
+                        strokeColor : "#1E90FF",
+                        strokeWeight : 1.5}}
+                />
                 {this.createMarkers()}
             </GoogleMap>
         ));

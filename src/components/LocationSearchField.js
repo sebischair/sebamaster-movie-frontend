@@ -16,8 +16,15 @@ export class LocationSearchField extends React.Component {
 
     handlePlacesUpdate(places){
         if(places && places[0]){
-            this.props.handleLocationChange(places[0].formatted_name, places[0].geometr);
+            this.props.handleLocationChange(places[0].formatted_address, {lat : places[0].geometry.location.lat(), lng : places[0].geometry.location.lng() });
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState){
+        if(nextProps.locName === this.props.locName){
+            return false;
+        }
+        return true;
     }
 
     render() {
@@ -33,17 +40,24 @@ export class LocationSearchField extends React.Component {
 
                     this.setState({
                         places: [],
+                        locName : this.props.locName,
                         bounds : {north : 48.270625, south: 48.016338, west: 11.259752,east: 11.940218},
                         onSearchBoxMounted: ref => {
                             refs.searchBox = ref;
                         },
                         onPlacesChanged: () => {
                             const places = refs.searchBox.getPlaces();
-                            this.props.handlePlacesUpdate(places);
                             this.setState({
-                                places,
+                                places : places,
+                                locName : places[0].formatted_address
                             });
+                            this.props.handlePlacesUpdate(places);
                         },
+                        handleInputChange: (e) => {
+                            this.setState({
+                                locName : e.target.value
+                            });
+                        }
                     })
                 },
             }),
@@ -58,12 +72,14 @@ export class LocationSearchField extends React.Component {
                     <FormControl
                         type="text"
                         placeholder="Location"
-                    />
+                        value = {props.locName}
+                        onChange = {(e) => props.handleInputChange(e)}
+                        />
                 </StandaloneSearchBox>
             </div>
         );
 
-        return <SearchField handlePlaceUpdate = {this.handlePlacesUpdate} />;
+        return <SearchField handlePlacesUpdate = {this.handlePlacesUpdate} locName = {this.props.locName} />;
     };
 
 }

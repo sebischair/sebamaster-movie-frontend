@@ -61,7 +61,7 @@ export default class EventDetailsModal extends React.Component {
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button bsStyle={'primary'} disabled = {EventService.checkParticipation(event)} onClick={() => {
+                    <Button bsStyle={'primary'} onClick={() => {
                         this.props.handleClose();
                         this.props.joinEvent(event);
                     }}>Join</Button>

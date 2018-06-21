@@ -18,21 +18,25 @@ import DayPicker from 'react-day-picker/DayPicker';
 import EventService from '../services/EventService'
 import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";
+import DateTimeField from "./DateTimeField";
+
+const defaultFilter = {
+        activity : 'All',
+        location : {lng : 11.587, lat : 48.145},
+        locName : "München, DE",
+        radius : 3,
+        start_date: new Date(),
+        start_time: undefined,
+        end_date: undefined,
+        end_time: undefined
+    };
 
 class EventFilter extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            filter : {
-                activity : 'All',
-                location : '11.587,48.145,5',
-                radius : 5,
-                start_date: new Date(),
-                start_time: undefined,
-                end_date: undefined,
-                end_time: undefined
-            },
+            filter : defaultFilter,
             activities : undefined
         };
 
@@ -64,6 +68,8 @@ class EventFilter extends React.Component {
                 error: e
             });
         });
+
+        this.props.locationCallback(this.state.filter.location, this.state.filter.radius);
     }
 
     handleActivityChange(e){
@@ -71,10 +77,12 @@ class EventFilter extends React.Component {
         filter.activity = e.target.value;
         this.setState({filter : filter});
     }
-    handleLocationChange(e){
+    handleLocationChange(name, loc){
         let filter = this.state.filter;
-        filter.location = e.target.value;
+        filter.locName = name;
+        filter.location = loc;
         this.setState({filter : filter});
+
     }
     handleRadiusChange(e){
         let filter = this.state.filter;
@@ -107,15 +115,7 @@ class EventFilter extends React.Component {
     }
     resetFilter(){
         this.setState({
-            filter : {
-                activity : 'All',
-                location : '11.587,48.145,5',
-                radius : 5,
-                start_date: new Date(),
-                start_time: undefined,
-                end_date: undefined,
-                end_time: undefined
-            }
+            filter : defaultFilter
         });
         this.handleFilterSubmit();
     }
@@ -146,9 +146,11 @@ class EventFilter extends React.Component {
         if(this.state.filter.activity !== "All"){
             filter.activity = this.state.filter.activity;
         }
-        if(this.state.filter.location){
-            filter.location = this.state.filter.location;
+        if(this.state.filter.location && this.state.filter.radius){
+            filter.location = this.state.filter.location.lng + "," + this.state.filter.location.lat + "," + this.state.filter.radius;
         }
+
+        this.props.locationCallback(this.state.filter.location, this.state.filter.radius);
         this.props.onFilterSubmit(filter);
     }
 
@@ -172,25 +174,24 @@ class EventFilter extends React.Component {
                     <form>
                             <FormGroup controlId="filterActivity">
                                 <ControlLabel>Activity</ControlLabel>
+                                <InputGroup>
+                                <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
                                 <FormControl placeholder="All"
                                              componentClass="select"
                                              onChange = {this.handleActivityChange}>
                                     <option value="All" key={"All"}>All</option>
                                     {this.state.activities && this.renderActivityOptions()}
                                 </FormControl>
+                                </InputGroup>
                             </FormGroup>
                             <FormGroup controlId="filterLocation">
                                 <ControlLabel>Location</ControlLabel>
                                 <InputGroup>
-                                    <FormControl
-                                        type="text"
-                                        value={this.state.filter.location}
-                                        placeholder="Location"
-                                        onChange={this.handleLocationChange}
-                                    />
                                     <InputGroup.Addon><Glyphicon glyph={'map-marker'}/></InputGroup.Addon>
+                                        <LocationSearchField locName = {this.state.filter.locName} handleLocationChange = {(name,loc) => {this.handleLocationChange(name,loc);}}/>
                                 </InputGroup>
                                 <InputGroup style = {{marginTop : "5px"}}>
+                                    <InputGroup.Addon><Glyphicon glyph={'record'}/></InputGroup.Addon>
                                     <FormControl placeholder="Radius"
                                                  componentClass="select"
                                                  onChange = {this.handleRadiusChange}
@@ -201,68 +202,10 @@ class EventFilter extends React.Component {
                                         <option value={10} key={"10km"}>10km</option>
                                         <option value={20} key={"20km"}>20km</option>
                                     </FormControl>
-                                    <InputGroup.Addon><Glyphicon glyph={'record'}/></InputGroup.Addon>
                                 </InputGroup>
                             </FormGroup>
-                            <FormGroup controlId="filterStart">
-                                <ControlLabel>Start Time</ControlLabel>
-                                <OverlayTrigger trigger="click" placement="bottom" rootClose overlay={
-                                    <Popover id="date-picker-start">
-                                        <DayPicker onDayClick={this.handleStartDateChange} selectedDays={this.state.filter.start_date}/>
-                                    </Popover>}
-                                >
-                                    <InputGroup>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="DD.MM.YYYY"
-                                            value = {this.state.filter.start_date ? this.state.filter.start_date.toLocaleDateString() : undefined}
-                                            onChange = {() => {}}
-                                        />
-                                        <InputGroup.Addon><Glyphicon glyph={'calendar'}/></InputGroup.Addon>
-                                    </InputGroup>
-                                </OverlayTrigger>
-                                <InputGroup style = {{marginTop : "5px"}}>
-                                <FormControl
-                                     type="text"
-                                     value={this.state.filter.start_time}
-                                     placeholder="HH:MM"
-                                     size='5'
-                                     onChange={this.handleStartTimeChange}
-                                />
-                                <InputGroup.Addon><Glyphicon glyph={'time'}/></InputGroup.Addon>
-                                </InputGroup>
-                            </FormGroup>
-                            <FormGroup controlId="filterEnd">
-                                <ControlLabel>End Time</ControlLabel>
-                                <OverlayTrigger trigger="click" placement="bottom" rootClose overlay={
-                                    <Popover id="date-picker-end">
-                                        <DayPicker onDayClick={this.handleEndDateChange} selectedDays={this.state.filter.end_date}/>
-                                    </Popover>}
-                                >
-                                    <InputGroup>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="DD.MM.YYYY"
-                                            value = {this.state.filter.end_date ? this.state.filter.end_date.toLocaleDateString() : undefined}
-                                            onChange = {() => {}}
-                                        />
-                                        <InputGroup.Addon><Glyphicon glyph={'calendar'}/></InputGroup.Addon>
-                                    </InputGroup>
-                                </OverlayTrigger>
-                                <InputGroup style = {{marginTop : "5px"}}>
-                                    <FormControl
-                                        type="text"
-                                        value={this.state.filter.end_time}
-                                        placeholder="HH:MM"
-                                        size='5'
-                                        onChange={this.handleEndTimeChange}
-                                    />
-                                    <InputGroup.Addon><Glyphicon glyph={'time'}/></InputGroup.Addon>
-                                </InputGroup>
-                            </FormGroup>
-                            <FormGroup>
-                                <LocationSearchField/>
-                            </FormGroup>
+                        <DateTimeField label={"Start Time"} date={this.state.filter.start_date} time={this.state.filter.start_time} handleDateChange = {this.handleStartDateChange} handleTimeChange = {this.handleStartTimeChange}/>
+                        <DateTimeField label={"End Time"} date={this.state.filter.end_date} time={this.state.filter.end_time} handleDateChange = {this.handleEndDateChange} handleTimeChange = {this.handleEndTimeChange}/>
                     </form>
                 </Panel.Body></Panel.Collapse>
                 <Panel.Footer>
