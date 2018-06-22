@@ -9,12 +9,8 @@ import {
     FormControl,
     ControlLabel,
     InputGroup,
-    OverlayTrigger,
-    Popover,
-    PageHeader,
     Panel
 } from 'react-bootstrap';
-import DayPicker from 'react-day-picker/DayPicker';
 import EventService from '../services/EventService'
 import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";
