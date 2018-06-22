@@ -46,17 +46,6 @@ export default class EventService {
         });
     }
 
-    static getActivities() {
-        return new Promise((resolve, reject) => {
-            HttpService.get(`${EventService.baseURL()}` + "/activity",
-                function(data) {
-                    resolve(data);
-                }, function(textStatus) {
-                    reject(textStatus);
-                });
-        });
-    }
-
     static joinEvent(event){
 
         let user = UserService.getCurrentUser();

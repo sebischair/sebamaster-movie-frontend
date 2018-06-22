@@ -9,13 +9,9 @@ import {
     FormControl,
     ControlLabel,
     InputGroup,
-    OverlayTrigger,
-    Popover,
-    PageHeader,
     Panel
 } from 'react-bootstrap';
-import DayPicker from 'react-day-picker/DayPicker';
-import EventService from '../services/EventService'
+import ActivityService from '../services/ActivityService'
 import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";
 import DateTimeField from "./DateTimeField";
@@ -59,7 +55,7 @@ class EventFilter extends React.Component {
         this.handleFilterSubmit();
 
         // Load activities
-        EventService.getActivities().then((data) => {
+        ActivityService.getActivities().then((data) => {
             data.sort();
             this.state.activities = data;
         }).catch((e) => {
