@@ -39,19 +39,13 @@ class UserMenu extends React.Component {
                 this.logout();
                 break;
             case 2:
-                if (this.props.location.pathname != 'login/') {
+                if (this.props.location.pathname != '/login') {
                     this.props.history.push('/login');
-                }
-                else {
-                    window.location.reload();
                 }
                 break;
             case 4:
                 if (this.props.location.pathname != '/register') {
                     this.props.history.push('/register');
-                }
-                else {
-                    window.location.reload();
                 }
                 break;
             default:
