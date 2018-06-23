@@ -22,7 +22,7 @@ class Header extends React.Component {
             <Navbar collapseOnSelect>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <a href='#' onClick={()=>{this.props.history.push('/')}} style={{padding: '3px 15px 0px',}}>
+                        <a href='#' onClick={()=>{this.props.history.push('/')}} style={{padding: '3px 15px 0px'}}>
                             <img src={banner_small} alt="Meet2Sport" style={{ height: '100%',}}/>
                         </a>
                     </Navbar.Brand>

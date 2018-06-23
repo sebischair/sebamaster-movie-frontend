@@ -2,9 +2,10 @@
 
 import React from 'react';
 
-import UserLogin from '../components/UserLogin';
-
 import UserService from '../services/UserService';
+import {Grid, Row, Col} from "react-bootstrap";
+import Page from "../components/Page";
+import UserForm from "../components/UserForm";
 
 
 export class UserLoginView extends React.Component {
@@ -15,8 +16,11 @@ export class UserLoginView extends React.Component {
     }
 
     login(user) {
+        this.setState({
+            error: undefined
+        });
         UserService.login(user.username, user.password).then((data) => {
-            this.props.history.push('/');
+            this.props.history.push("/");
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -27,7 +31,20 @@ export class UserLoginView extends React.Component {
 
     render() {
         return (
-          <UserLogin onSubmit={(user) => this.login(user)} error={this.state.error}></UserLogin>
+            <Page>
+                <Grid>
+                    <Row>
+                        <Col xsHidden sm={12}>
+                            <div style={{height: "65px"}}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} smOffset={2} sm={8}>
+                            <UserForm onSubmit={(user) => this.login(user)} isLogin={true} error={this.state.error}/>
+                        </Col>
+                    </Row>
+                </Grid>
+            </Page>
         );
     }
 }

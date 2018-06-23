@@ -10,7 +10,7 @@ import {
     ControlLabel,
     InputGroup,
     Panel
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 import ActivityService from '../services/ActivityService'
 import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";

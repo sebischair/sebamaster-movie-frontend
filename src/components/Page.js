@@ -24,7 +24,7 @@ export default class Page extends React.Component {
 
     render() {
         return (
-            <section>
+            <section style={{minHeight : "100vh"}}>
                 <Header title={this.state.title} />
                 {this.props.children}
 
