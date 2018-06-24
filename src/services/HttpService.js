@@ -28,7 +28,12 @@ export default class HttpService {
                 window.location = "/#login";
                 onError("Authorization failed. Log in with correct user and password.");
             } else {
-                onError("An unexpected error occurred.");
+                resp.json().then(resp => {
+                    if (resp.hasOwnProperty('message')) {
+                        onError(resp.message);
+                    }
+                    onError("An unknown error occurred");
+                });
             }
         }).catch((e) => {
             onError(e.message);
@@ -59,7 +64,12 @@ export default class HttpService {
                 window.location = "/#login";
                 onError("Authorization failed. Log in with correct user and password.");
             } else {
-                onError("An unexpected error occurred.");
+                resp.json().then(resp => {
+                    if (resp.hasOwnProperty('message')) {
+                        onError(resp.message);
+                    }
+                    onError("An unknown error occurred");
+                });
             }
         }).catch((e) => {
             onError(e.message);
@@ -90,7 +100,12 @@ export default class HttpService {
                 window.location = "/#login";
                 onError("Authorization failed. Log in with correct user and password.");
             } else {
-                onError("An unexpected error occurred.");
+                 resp.json().then(resp => {
+                     if (resp.hasOwnProperty('message')) {
+                         onError(resp.message);
+                     }
+                     onError("An unknown error occurred");
+                 });
             }
         }).catch((e) => {
             onError(e.message);
@@ -119,7 +134,12 @@ export default class HttpService {
                 window.location = "/#login";
                 onError("Authorization failed. Log in with correct user and password.");
             } else {
-                onError("An unexpected error occurred.");
+                resp.json().then(resp => {
+                    if (resp.hasOwnProperty('message')) {
+                        onError(resp.message);
+                    }
+                    onError("An unknown error occurred");
+                });
             }
         }).catch((e) => {
             onError(e.message);
