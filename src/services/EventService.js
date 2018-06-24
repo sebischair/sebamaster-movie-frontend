@@ -2,6 +2,8 @@
 
 import HttpService from "./HttpService";
 import UserService from "./UserService";
+import SportPlaceService from "./SportPlaceService";
+import ActivityService from "./ActivityService";
 
 export default class EventService {
 
@@ -43,6 +45,16 @@ export default class EventService {
                 }, function(textStatus) {
                     reject(textStatus);
                 });
+        });
+    }
+
+    static createEvent(event) {
+        return new Promise((resolve, reject) => {
+            HttpService.post(EventService.baseURL(), event, function (data) {
+                resolve(data);
+            }, function (textStatus) {
+                reject(textStatus);
+            });
         });
     }
 

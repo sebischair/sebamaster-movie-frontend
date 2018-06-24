@@ -7,9 +7,11 @@ import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, 
 import Page from '../components/Page';
 import LocationMap from '../components/LocationMap';
 import ActivityService from '../services/ActivityService';
-import SportPlaceService from '../services/SportPlaceService';
+import EventService from '../services/EventService';
 import InfoModal from '../components/InfoModal';
 import DateTimeField from "../components/DateTimeField";
+import CounterInput from 'react-bootstrap-personalized-counter';
+import SportPlaceService from "../services/SportPlaceService";
 
 export class CreateEventView extends React.Component {
 
@@ -29,6 +31,8 @@ export class CreateEventView extends React.Component {
                     coordinates: []
                 },
             },
+            activities: undefined,
+            locations: undefined,
             locationName: '',
             info: {
                 showInfo: false,
@@ -55,6 +59,16 @@ export class CreateEventView extends React.Component {
         ActivityService.getActivities().then((data) => {
             data.sort();
             this.setState({ activities: data })
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                error: e
+            });
+        });
+
+        SportPlaceService.getSportPlaces().then((data) => {
+            data.sort();
+            this.setState({ locations: data})
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -110,8 +124,8 @@ export class CreateEventView extends React.Component {
     }
 
     handleSubmit(e) {
-        const sportPlace = this.state.form;
-        SportPlaceService.createSportPlace(sportPlace).then((data) => {
+        const event = this.state.form;
+        EventService.createEvent(event).then((data) => {
             this.setModal(true, <div><h4>Successfully added location!</h4><p>{sportPlace.name}</p></div>, "success");
         }).catch((e) => {
             console.log(e);
@@ -132,7 +146,7 @@ export class CreateEventView extends React.Component {
 
     isEverythingFilled() {
         const state = this.state;
-        return state.form.name != '' && state.form.openingHours != '' && state.form.description != '' && state.form.loc.coordinates.length == 2;
+        return state.form.name != '' && state.form.description != '' && state.form.loc.coordinates.length == 2;
     }
 
     setModal(showInfo, body, type) {
@@ -183,7 +197,7 @@ export class CreateEventView extends React.Component {
                                                         onChange={this.handleNameChange}>
                                                     </FormControl>
                                                 </FormGroup>
-                                                <FormGroup controlId="filterActivity">
+                                                <FormGroup controlId="setActivity">
                                                     <ControlLabel>Activity</ControlLabel>
                                                     <InputGroup>
                                                         <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
@@ -192,6 +206,10 @@ export class CreateEventView extends React.Component {
                                                             {this.state.activities && this.renderActivityOptions()}
                                                         </FormControl>
                                                     </InputGroup>
+                                                </FormGroup>
+                                                <FormGroup controlId="setMaxParticipants">
+                                                    <ControlLabel>Maximum Number of Participants</ControlLabel>
+                                                    <CounterInput value={2} min={0} max={500} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { console.log(value) } } />
                                                 </FormGroup>
                                                 <DateTimeField label={"Start Time"} date={this.state.form.start_date} time={this.state.form.start_time} handleDateChange = {this.handleStartDateChange} handleTimeChange = {this.handleStartTimeChange}/>
                                                 <DateTimeField label={"End Time"} date={this.state.form.end_date} time={this.state.form.end_time} handleDateChange = {this.handleEndDateChange} handleTimeChange = {this.handleEndTimeChange}/>

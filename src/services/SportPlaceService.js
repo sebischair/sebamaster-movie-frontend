@@ -1,6 +1,7 @@
 "use strict";
 
 import HttpService from './HttpService';
+import ActivityService from "./ActivityService";
 
 export default class SportPlaceService {
 
@@ -16,6 +17,17 @@ export default class SportPlaceService {
             }, function (textStatus) {
                 reject(textStatus);
             });
+        });
+    }
+
+    static getSportPlaces() {
+        return new Promise((resolve, reject) => {
+            HttpService.get(`${SportPlaceService.baseURL()}`,
+                function(data) {
+                    resolve(data);
+                }, function(textStatus) {
+                    reject(textStatus);
+                });
         });
     }
 }
