@@ -22,16 +22,13 @@ export class CreateEventView extends React.Component {
             form: {
                 name: '',
                 activity: '',
+                sportPlace: '',
                 maxParticipants: 2,
                 start_date: new Date(),
                 start_time: undefined,
                 end_date: undefined,
                 end_time: undefined,
                 description: '',
-                loc: {
-                    type: 'Point',
-                    coordinates: []
-                },
             },
             activities: undefined,
             sportPlaces: undefined,
@@ -52,8 +49,9 @@ export class CreateEventView extends React.Component {
         this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
 
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleLocationTextChange = this.handleLocationTextChange.bind(this);
+        this.handleLocationMapChange = this.handleLocationMapChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onLocationSet = this.onLocationSet.bind(this);
         this.isEverythingFilled = this.isEverythingFilled.bind(this);
         this.setModal = this.setModal.bind(this);
     }
@@ -142,15 +140,17 @@ export class CreateEventView extends React.Component {
         });
     }
 
-    onLocationSet(location) {
+    handleLocationMapChange(name,id) {
         let form = this.state.form;
-        form.loc.coordinates = [location.longitude, location.latitude];
-        this.setState(
-            {
-                form: form,
-                locationName: location.name
-            }
-        );
+        form.sportPlace = id;
+        this.setState({
+            form: form,
+            locationName: name
+        });
+    }
+
+    handleLocationTextChange(e) {
+        this.setState({ locationName: e.target.value });
     }
 
     isEverythingFilled() {
@@ -241,13 +241,14 @@ export class CreateEventView extends React.Component {
                                                         <FormControl
                                                             type="text"
                                                             value={this.state.locationName}
-                                                            placeholder="Location Name">
+                                                            placeholder="Location Name"
+                                                            onChange={this.handleLocationTextChange}>
                                                         </FormControl>
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
                                                     </InputGroup>
                                                     <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <br></br>
-                                                    <SportPlaceMap></SportPlaceMap>
+                                                    <SportPlaceMap updateLocation={this.handleLocationMapChange}></SportPlaceMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
