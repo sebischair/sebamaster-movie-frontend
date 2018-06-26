@@ -17,22 +17,22 @@ export default class HttpService {
             method: 'GET',
             headers: header
         }).then((resp) => {
-            if(resp.ok) {
-                return resp.json();
-            }
-            else if(this.checkIfUnauthorized(resp)) {
+            if(this.checkIfUnauthorized(resp)) {
                 window.location = "/#login";
             }
             else {
-                resp.json().then((json) => {
-                    onError(json.error);
-                });
+                return resp.json();
             }
         }).then((resp) => {
-            if(resp.hasOwnProperty('token')) {
-                window.localStorage['jwtToken'] = resp.token;
+            if(resp.error) {
+                onError(resp.error);
             }
-            onSuccess(resp);
+            else {
+                if(resp.hasOwnProperty('token')) {
+                    window.localStorage['jwtToken'] = resp.token;
+                }
+                onSuccess(resp);
+            }
         }).catch((e) => {
             onError(e.message);
         });
@@ -51,22 +51,23 @@ export default class HttpService {
             headers: header,
             body: JSON.stringify(data)
         }).then((resp) => {
-            if(resp.ok) {
-                return resp.json();
-            }
-            else if(this.checkIfUnauthorized(resp)) {
+            if(this.checkIfUnauthorized(resp)) {
                 window.location = "/#login";
+                return;
             }
             else {
-                resp.json().then((json) => {
-                    onError(json.error);
-                });
+                return resp.json();
             }
         }).then((resp) => {
-            if(resp.hasOwnProperty('token')) {
-                window.localStorage['jwtToken'] = resp.token;
+            if(resp.error) {
+                onError(resp.error);
             }
-            onSuccess(resp);
+            else {
+                if(resp.hasOwnProperty('token')) {
+                    window.localStorage['jwtToken'] = resp.token;
+                }
+                onSuccess(resp);
+            }
         }).catch((e) => {
             onError(e.message);
         });
@@ -85,22 +86,23 @@ export default class HttpService {
             headers: header,
             body: JSON.stringify(data)
         }).then((resp) => {
-            if(resp.ok) {
-                return resp.json();
-            }
-            else if(this.checkIfUnauthorized(resp)) {
+            if(this.checkIfUnauthorized(resp)) {
                 window.location = "/#login";
+                return;
             }
             else {
-                resp.json().then((json) => {
-                    onError(json.error);
-                });
+                return resp.json();
             }
         }).then((resp) => {
-            if(resp.hasOwnProperty('token')) {
-                window.localStorage['jwtToken'] = resp.token;
+            if(resp.error) {
+                onError(resp.error);
             }
-            onSuccess(resp);
+            else {
+                if(resp.hasOwnProperty('token')) {
+                    window.localStorage['jwtToken'] = resp.token;
+                }
+                onSuccess(resp);
+            }
         }).catch((e) => {
             onError(e.message);
         });
@@ -117,19 +119,20 @@ export default class HttpService {
             method: 'DELETE',
             headers: header
         }).then((resp) => {
-            if(resp.ok) {
-                return resp.json();
-            }
-            else if(this.checkIfUnauthorized(resp)) {
+            if(this.checkIfUnauthorized(resp)) {
                 window.location = "/#login";
+                return;
             }
             else {
-                resp.json().then((json) => {
-                    onError(json.error);
-                });
+                return resp.json();
             }
         }).then((resp) => {
-            onSuccess(resp);
+            if(resp.error) {
+                onError(resp.error);
+            }
+            else {
+                onSuccess(resp)
+            }
         }).catch((e) => {
             onError(e.message);
         });
