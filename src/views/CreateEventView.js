@@ -12,6 +12,7 @@ import InfoModal from '../components/InfoModal';
 import DateTimeField from "../components/DateTimeField";
 import CounterInput from 'react-bootstrap-personalized-counter';
 import SportPlaceService from "../services/SportPlaceService";
+import SportPlaceMap from "../components/SportPlaceMap";
 
 export class CreateEventView extends React.Component {
 
@@ -21,6 +22,7 @@ export class CreateEventView extends React.Component {
             form: {
                 name: '',
                 activity: '',
+                maxParticipants: 2,
                 start_date: new Date(),
                 start_time: undefined,
                 end_date: undefined,
@@ -32,7 +34,7 @@ export class CreateEventView extends React.Component {
                 },
             },
             activities: undefined,
-            locations: undefined,
+            sportPlaces: undefined,
             locationName: '',
             info: {
                 showInfo: false,
@@ -40,6 +42,7 @@ export class CreateEventView extends React.Component {
                 type: undefined
             },
         };
+
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
 
@@ -58,7 +61,7 @@ export class CreateEventView extends React.Component {
     componentWillMount() {
         ActivityService.getActivities().then((data) => {
             data.sort();
-            this.setState({ activities: data })
+            this.setState({ activities: data });
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -68,7 +71,7 @@ export class CreateEventView extends React.Component {
 
         SportPlaceService.getSportPlaces().then((data) => {
             data.sort();
-            this.setState({ locations: data})
+            this.setState({ sportPlaces: data});
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -86,6 +89,12 @@ export class CreateEventView extends React.Component {
     handleActivityChange(e) {
         let form = this.state.form;
         form.activity = e.target.value;
+        this.setState({ form: form });
+    }
+
+    handleParticipantsChange(number) {
+        let form = this.state.form;
+        form.maxParticipants = number;
         this.setState({ form: form });
     }
 
@@ -209,7 +218,7 @@ export class CreateEventView extends React.Component {
                                                 </FormGroup>
                                                 <FormGroup controlId="setMaxParticipants">
                                                     <ControlLabel>Maximum Number of Participants</ControlLabel>
-                                                    <CounterInput value={2} min={0} max={500} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { console.log(value) } } />
+                                                    <CounterInput value={this.state.form.maxParticipants} min={0} max={500} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { this.handleParticipantsChange(value) } } />
                                                 </FormGroup>
                                                 <DateTimeField label={"Start Time"} date={this.state.form.start_date} time={this.state.form.start_time} handleDateChange = {this.handleStartDateChange} handleTimeChange = {this.handleStartTimeChange}/>
                                                 <DateTimeField label={"End Time"} date={this.state.form.end_date} time={this.state.form.end_time} handleDateChange = {this.handleEndDateChange} handleTimeChange = {this.handleEndTimeChange}/>
@@ -232,14 +241,13 @@ export class CreateEventView extends React.Component {
                                                         <FormControl
                                                             type="text"
                                                             value={this.state.locationName}
-                                                            placeholder="Location"
-                                                            disabled={true}>
+                                                            placeholder="Location Name">
                                                         </FormControl>
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
                                                     </InputGroup>
                                                     <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <br></br>
-                                                    <LocationMap onLocationSet={this.onLocationSet}></LocationMap>
+                                                    <SportPlaceMap></SportPlaceMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
