@@ -19,6 +19,7 @@ export class CreateEventView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // form includes Attributes stored in Database
             form: {
                 name: '',
                 activity: '',
@@ -30,9 +31,11 @@ export class CreateEventView extends React.Component {
                 end_time: undefined,
                 description: '',
             },
-            activities: undefined,
-            sportPlaces: undefined,
+            // Temporary Attributes for UI
+            activities: undefined,  // Possible Activities
+            sportPlaces: undefined, // Filterd Sportplaces (by form:activity)
             locationName: '',
+            // Info includes Attributes of Info Field
             info: {
                 showInfo: false,
                 body: undefined,
@@ -42,24 +45,27 @@ export class CreateEventView extends React.Component {
 
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
-
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
-
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleLocationTextChange = this.handleLocationTextChange.bind(this);
-        this.handleLocationMapChange = this.handleLocationMapChange.bind(this);
+        this.handleLocationTextChange = this.handleLocationTextChange.bind(this);   // On Textfield change
+        this.handleLocationMapChange = this.handleLocationMapChange.bind(this);     // On Marker click
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.isEverythingFilled = this.isEverythingFilled.bind(this);
         this.setModal = this.setModal.bind(this);
     }
 
     componentWillMount() {
+        // Read possible activities from database
         ActivityService.getActivities().then((data) => {
-            data.sort();
-            this.setState({ activities: data });
+            data.sort();    // Alphabetic sort
+            let form = this.state.form;
+            form.activity = data[0];    // Set selected Activity on first in List
+            this.setState({
+                form: form,
+                activities: data
+            });
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -67,6 +73,7 @@ export class CreateEventView extends React.Component {
             });
         });
 
+        // Read Sportplaces from database
         SportPlaceService.getSportPlaces().then((data) => {
             data.sort();
             this.setState({ sportPlaces: data});
@@ -78,6 +85,7 @@ export class CreateEventView extends React.Component {
         });
     }
 
+    // Changes in fillout form
     handleNameChange(e) {
         let form = this.state.form;
         form.name = e.target.value;
@@ -130,10 +138,63 @@ export class CreateEventView extends React.Component {
         this.setState({ form: form });
     }
 
+    handleLocationMapChange(name,id,activities) {
+        let form = this.state.form;
+        form.sportPlace = id;
+        activities.sort();  // Sort alphabetical
+        form.activity = activities[0];    // Set selected Activity on first in SportsPlace list
+        this.setState({
+            form: form,
+            locationName: name,
+            activities: activities
+        });
+    }
+
+    handleLocationTextChange(e) {
+        this.setState({ locationName: e.target.value });
+    }
+
     handleSubmit(e) {
+        // Input Validation
+        let errorArray = [];
+        if(!this.state.form.name) {
+            errorArray.push("Event Name not set");
+        }
+        if(!this.state.form.activity) {
+            errorArray.push("Activity not set");
+        }
+        if(!this.state.form.sportPlace) {
+            errorArray.push("Location not set");
+        }
+        if(this.state.form.maxParticipants < 2) {
+            errorArray.push("Number of Participants must be at least 2");
+        }
+        if(!this.state.form.start_date) {
+            errorArray.push("Start Date not set");
+        }
+        if(!this.state.form.start_time) {
+            errorArray.push("Start Time not set");
+        }
+        if(!this.state.form.end_date) {
+            errorArray.push("End Date not set");
+        }
+        if(!this.state.form.end_time) {
+            errorArray.push("End Time not set");
+        }
+        if(!this.state.form.description) {
+            errorArray.push("Description not set");
+        }
+        if(errorArray.length > 0) {
+            let errorString = errorArray[0];
+            for(let i=1;i<errorArray.length;i++){
+                errorString += ", " + errorArray[i];
+            }
+            this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
+            return;
+        }
 
+        // Create json Object to send to backend
         let submitEvent = {};
-
         submitEvent.name = this.state.form.name;
         submitEvent.activity = this.state.form.activity;
         submitEvent.sportPlace = this.state.form.sportPlace;
@@ -165,8 +226,6 @@ export class CreateEventView extends React.Component {
         submitEvent.description = this.state.form.description;
         submitEvent.sportPlace = this.state.form.sportPlace;
 
-        //console.log(JSON.stringify(submitForm));
-
         EventService.createEvent(submitEvent).then((data) => {
             this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
         }).catch((e) => {
@@ -174,25 +233,6 @@ export class CreateEventView extends React.Component {
             this.setModal(true, e, "danger");
         });
 
-    }
-
-    handleLocationMapChange(name,id) {
-        let form = this.state.form;
-        form.sportPlace = id;
-        this.setState({
-            form: form,
-            locationName: name
-        });
-    }
-
-    handleLocationTextChange(e) {
-        this.setState({ locationName: e.target.value });
-    }
-
-    isEverythingFilled() {
-        const state = this.state;
-        return true;
-        // return state.form.name != '' && state.form.description != '' && state.form.loc.coordinates.length == 2;
     }
 
     setModal(showInfo, body, type) {
@@ -243,16 +283,6 @@ export class CreateEventView extends React.Component {
                                                         onChange={this.handleNameChange}>
                                                     </FormControl>
                                                 </FormGroup>
-                                                <FormGroup controlId="setActivity">
-                                                    <ControlLabel>Activity</ControlLabel>
-                                                    <InputGroup>
-                                                        <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
-                                                        <FormControl componentClass="select"
-                                                                     onChange = {this.handleActivityChange}>
-                                                            {this.state.activities && this.renderActivityOptions()}
-                                                        </FormControl>
-                                                    </InputGroup>
-                                                </FormGroup>
                                                 <FormGroup controlId="setMaxParticipants">
                                                     <ControlLabel>Maximum Number of Participants</ControlLabel>
                                                     <CounterInput value={this.state.form.maxParticipants} min={0} max={500} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { this.handleParticipantsChange(value) } } />
@@ -284,12 +314,21 @@ export class CreateEventView extends React.Component {
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
                                                     </InputGroup>
                                                     <HelpBlock>The location has to be selected via the map.</HelpBlock>
+                                                    <ControlLabel>Activity</ControlLabel>
+                                                    <InputGroup>
+                                                        <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
+                                                        <FormControl componentClass="select"
+                                                                     onChange = {this.handleActivityChange}>
+                                                            {this.state.activities && this.renderActivityOptions()}
+                                                        </FormControl>
+                                                    </InputGroup>
+                                                    <HelpBlock>The activity list updates with location select.</HelpBlock>
                                                     <br></br>
                                                     <SportPlaceMap updateLocation={this.handleLocationMapChange}></SportPlaceMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
-                                                <Button disabled={!this.isEverythingFilled()} type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
+                                                <Button type="submit" bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>
                                                 {' '}
                                             </Col>
                                         </Row>

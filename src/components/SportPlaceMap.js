@@ -53,8 +53,8 @@ export default class SportPlaceMap extends React.PureComponent {
                     console.log(`Current clicked markers length: ${clickedMarkers.length}`)
                     console.log(clickedMarkers)
                 },
-                onMarkerClick: () => (markername,id) => {
-                    this.props.updateLocation(markername,id);
+                onMarkerClick: () => (markername,id,activities) => {   // Update Location state in CreateEventView
+                    this.props.updateLocation(markername,id,activities);
                 }
             }),
             withScriptjs,
@@ -62,7 +62,7 @@ export default class SportPlaceMap extends React.PureComponent {
         )(props =>
             <GoogleMap
                 defaultZoom={11}
-                defaultCenter={{ lat: 48.137154, lng: 11.576124 }}
+                defaultCenter={{ lat: 48.137154, lng: 11.576124 }}  // Munich center
             >
                 <MarkerClusterer
                     onClick={props.onMarkerClustererClick}
@@ -73,9 +73,9 @@ export default class SportPlaceMap extends React.PureComponent {
                     {props.markers.map(marker => (
                         <Marker
                             key={marker._id}
-                            title={marker.name}
+                            title={marker.name} // Induces pop-up on mouse hover with location name
                             position={{ lat: marker.loc.coordinates[1], lng: marker.loc.coordinates[0] }}
-                            onClick={() => props.onMarkerClick(marker.name,marker._id)}
+                            onClick={() => props.onMarkerClick(marker.name,marker._id,marker.activities)}
                         />
                     ))}
                 </MarkerClusterer>
