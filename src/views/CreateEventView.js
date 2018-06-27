@@ -58,6 +58,7 @@ export class CreateEventView extends React.Component {
 
     componentWillMount() {
         // Read possible activities from database
+        /*
         ActivityService.getActivities().then((data) => {
             data.sort();    // Alphabetic sort
             let form = this.state.form;
@@ -71,7 +72,16 @@ export class CreateEventView extends React.Component {
             this.setState({
                 error: e
             });
-        });
+        });*/
+
+        // Initialize Activity field
+        let data = ["Select Location first"]
+        let form = this.state.form;
+        form.activity = data[0];
+        this.setState({
+            form: form,
+            activities: data
+        })
 
         // Read Sportplaces from database
         SportPlaceService.getSportPlaces().then((data) => {
@@ -160,7 +170,7 @@ export class CreateEventView extends React.Component {
         if(!this.state.form.name) {
             errorArray.push("Event Name not set");
         }
-        if(!this.state.form.activity) {
+        if(!this.state.form.activity || this.state.form.activity == "Select Location first") {
             errorArray.push("Activity not set");
         }
         if(!this.state.form.sportPlace) {
@@ -247,7 +257,11 @@ export class CreateEventView extends React.Component {
         let result = [];
         if(this.state.activities){
             this.state.activities.forEach((activity) => {
-                result.push(<option value={activity} key={activity}>{activity}</option>);
+                if(activity == "Select Location first") {
+                    result.push(<option value="" selected disabled hidden>{activity}</option>);
+                } else {
+                    result.push(<option value={activity} key={activity}>{activity}</option>);
+                }
             });
         }
         return result;
@@ -268,7 +282,7 @@ export class CreateEventView extends React.Component {
                         <Col xs={12} sm={12}>
                             <Panel>
                                 <Panel.Heading>
-                                    <Panel.Title componentClass="h3"><Glyphicon glyph={'plus'} /> Properties</Panel.Title>
+                                    <Panel.Title componentClass="h3">Properties</Panel.Title>
                                 </Panel.Heading>
                                 <Panel.Body>
                                     <form>
@@ -303,17 +317,6 @@ export class CreateEventView extends React.Component {
 
                                             <Col xs={12} sm={12} md={12} lg={6}>
                                                 <FormGroup controlId="setLocation">
-                                                    <ControlLabel>Location</ControlLabel>
-                                                    <InputGroup>
-                                                        <FormControl
-                                                            type="text"
-                                                            value={this.state.locationName}
-                                                            placeholder="Location Name"
-                                                            onChange={this.handleLocationTextChange}>
-                                                        </FormControl>
-                                                        <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
-                                                    </InputGroup>
-                                                    <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <ControlLabel>Activity</ControlLabel>
                                                     <InputGroup>
                                                         <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
@@ -323,6 +326,17 @@ export class CreateEventView extends React.Component {
                                                         </FormControl>
                                                     </InputGroup>
                                                     <HelpBlock>The activity list updates with location select.</HelpBlock>
+                                                    <ControlLabel>Location</ControlLabel>
+                                                    <InputGroup>
+                                                        <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
+                                                        <FormControl
+                                                            type="text"
+                                                            value={this.state.locationName}
+                                                            placeholder="Location Name"
+                                                            onChange={this.handleLocationTextChange}>
+                                                        </FormControl>
+                                                    </InputGroup>
+                                                    <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <br></br>
                                                     <SportPlaceMap updateLocation={this.handleLocationMapChange}></SportPlaceMap>
                                                 </FormGroup>
