@@ -50,7 +50,7 @@ export default class EventService {
 
     static createEvent(event) {
         return new Promise((resolve, reject) => {
-            HttpService.post(EventService.baseURL(), event, function (data) {
+            HttpService.post(`${EventService.baseURL()}` + "/event/", event, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);

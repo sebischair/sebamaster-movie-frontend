@@ -5,7 +5,6 @@ import React from 'react';
 import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox, HelpBlock } from 'react-bootstrap';
 
 import Page from '../components/Page';
-import LocationMap from '../components/LocationMap';
 import ActivityService from '../services/ActivityService';
 import EventService from '../services/EventService';
 import InfoModal from '../components/InfoModal';
@@ -13,6 +12,7 @@ import DateTimeField from "../components/DateTimeField";
 import CounterInput from 'react-bootstrap-personalized-counter';
 import SportPlaceService from "../services/SportPlaceService";
 import SportPlaceMap from "../components/SportPlaceMap";
+import UserService from "../services/UserService";
 
 export class CreateEventView extends React.Component {
 
@@ -26,7 +26,7 @@ export class CreateEventView extends React.Component {
                 maxParticipants: 2,
                 start_date: new Date(),
                 start_time: undefined,
-                end_date: undefined,
+                end_date: new Date(),
                 end_time: undefined,
                 description: '',
             },
@@ -131,13 +131,49 @@ export class CreateEventView extends React.Component {
     }
 
     handleSubmit(e) {
-        const event = this.state.form;
-        EventService.createEvent(event).then((data) => {
-            this.setModal(true, <div><h4>Successfully added location!</h4><p>{sportPlace.name}</p></div>, "success");
+
+        let submitEvent = {};
+
+        submitEvent.name = this.state.form.name;
+        submitEvent.activity = this.state.form.activity;
+        submitEvent.sportPlace = this.state.form.sportPlace;
+        submitEvent.maxParticipants = this.state.form.maxParticipants;
+
+        if(this.state.form.start_date) {
+            submitEvent.start = this.state.form.start_date;
+            submitEvent.start.setHours(0, 0, 0);
+            if (this.state.form.start_time) {
+                let split = this.state.form.start_time.split(':');
+                if (split.length == 2) {
+                    submitEvent.start.setHours(split[0], split[1], 0);
+                }
+            }
+        }
+        if(this.state.form.end_date) {
+            submitEvent.end = this.state.form.end_date;
+            submitEvent.end.setHours(23, 59, 59);
+            if (this.state.form.end_time) {
+                let split = this.state.form.end_time.split(':');
+                if (split.length == 2) {
+                    submitEvent.end.setHours(split[0], split[1], 59);
+                }
+            }
+        }
+
+        submitEvent.creator = UserService.getCurrentUser().id;
+        submitEvent.participants = [submitEvent.creator];
+        submitEvent.description = this.state.form.description;
+        submitEvent.sportPlace = this.state.form.sportPlace;
+
+        //console.log(JSON.stringify(submitForm));
+
+        EventService.createEvent(submitEvent).then((data) => {
+            this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
         }).catch((e) => {
             console.log(e);
             this.setModal(true, e, "danger");
         });
+
     }
 
     handleLocationMapChange(name,id) {
@@ -155,7 +191,8 @@ export class CreateEventView extends React.Component {
 
     isEverythingFilled() {
         const state = this.state;
-        return state.form.name != '' && state.form.description != '' && state.form.loc.coordinates.length == 2;
+        return true;
+        // return state.form.name != '' && state.form.description != '' && state.form.loc.coordinates.length == 2;
     }
 
     setModal(showInfo, body, type) {
