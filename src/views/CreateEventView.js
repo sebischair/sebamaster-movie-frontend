@@ -13,6 +13,7 @@ import CounterInput from 'react-bootstrap-personalized-counter';
 import SportPlaceService from "../services/SportPlaceService";
 import SportPlaceMap from "../components/SportPlaceMap";
 import UserService from "../services/UserService";
+import LocationDetailsModal from "../components/LocationDetailsModal";
 
 export class CreateEventView extends React.Component {
 
@@ -34,6 +35,8 @@ export class CreateEventView extends React.Component {
             // Temporary Attributes for UI
             activities: undefined,  // Possible Activities
             sportPlaces: undefined, // Filterd Sportplaces (by form:activity)
+            selectedLocation: undefined,
+            showDetails: false,
             locationName: '',
             // Info includes Attributes of Info Field
             info: {
@@ -54,6 +57,8 @@ export class CreateEventView extends React.Component {
         this.handleLocationMapChange = this.handleLocationMapChange.bind(this);     // On Marker click
         this.handleSubmit = this.handleSubmit.bind(this);
         this.setModal = this.setModal.bind(this);
+        this.showLocationDetails= this.showLocationDetails.bind(this);
+        this.hideLocationDetails= this.hideLocationDetails.bind(this);
     }
 
     componentWillMount() {
@@ -148,7 +153,10 @@ export class CreateEventView extends React.Component {
         this.setState({ form: form });
     }
 
-    handleLocationMapChange(name,id,activities) {
+    handleLocationMapChange(location) {
+        let name = location.name;
+        let id = location.id;
+        let activities = location.activities
         let form = this.state.form;
         form.sportPlace = id;
         activities.sort();  // Sort alphabetical
@@ -156,7 +164,9 @@ export class CreateEventView extends React.Component {
         this.setState({
             form: form,
             locationName: name,
-            activities: activities
+            activities: activities,
+            showDetails : true,
+            selectedLocation : location
         });
     }
 
@@ -253,6 +263,20 @@ export class CreateEventView extends React.Component {
         this.setState({ info: info });
     }
 
+    showLocationDetails(location){
+        this.setState({
+            showDetails : true,
+            selectedLocation : location
+        });
+    }
+
+    hideLocationDetails(){
+        this.setState({
+            showDetails : false,
+            selectedLocation : undefined
+        });
+    }
+
     renderActivityOptions(){
         let result = [];
         if(this.state.activities){
@@ -270,6 +294,8 @@ export class CreateEventView extends React.Component {
     render() {
         return (
             <Page>
+                {this.state.showDetails && <LocationDetailsModal location = {this.state.selectedLocation} show={this.state.showDetails}
+                                                              handleClose = {this.hideLocationDetails}/>}
                 {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
                                                         type={this.state.info.type} handleClose={ () => {this.setModal(false)}} />}
                 <Grid>

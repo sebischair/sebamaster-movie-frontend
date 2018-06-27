@@ -53,8 +53,8 @@ export default class SportPlaceMap extends React.PureComponent {
                     console.log(`Current clicked markers length: ${clickedMarkers.length}`)
                     console.log(clickedMarkers)
                 },
-                onMarkerClick: () => (markername,id,activities) => {   // Update Location state in CreateEventView
-                    this.props.updateLocation(markername,id,activities);
+                onMarkerClick: () => (location) => {   // Update Location state in CreateEventView
+                    this.props.updateLocation(location);
                 }
             }),
             withScriptjs,
@@ -75,7 +75,7 @@ export default class SportPlaceMap extends React.PureComponent {
                             key={marker._id}
                             title={marker.name} // Induces pop-up on mouse hover with location name
                             position={{ lat: marker.loc.coordinates[1], lng: marker.loc.coordinates[0] }}
-                            onClick={() => props.onMarkerClick(marker.name,marker._id,marker.activities)}
+                            onClick={() => props.onMarkerClick(marker)}
                         />
                     ))}
                 </MarkerClusterer>
