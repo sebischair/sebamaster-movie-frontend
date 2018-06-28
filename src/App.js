@@ -23,7 +23,13 @@ export default class App extends React.Component {
         this.state = {
             title: 'Meet2Sport',
             routes: [
-                { component: HomeView , path: '/', exact: true},
+                { render: (props) => {
+                    if(UserService.isAuthenticated()) {
+                        return (<HomeView {... props} />)
+                    }
+                    else {
+                        return (<Redirect to={'/login'}/>)
+                    }} , path: '/', exact: true},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
                             return (<MyEventsView {... props} />)

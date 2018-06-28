@@ -28,6 +28,7 @@ export default class UserService {
                 username: user,
                 password: pass
             }, function(data) {
+                //window.localStorage.setItem('jwtToken', data.token);
                 resolve(data);
             }, function(textStatus) {
                 reject(textStatus);
@@ -52,6 +53,14 @@ export default class UserService {
     }
 
     static isAuthenticated() {
-        return !!window.localStorage['jwtToken'];
+        let token = window.localStorage['jwtToken'];
+        if (!token) return false;
+
+        let base64Url = token.split('.')[1];
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let exp = JSON.parse(window.atob(base64)).exp * 1000;
+        let current = new Date().getTime();
+        
+        return current < exp;
     }
 }
