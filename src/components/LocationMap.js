@@ -53,12 +53,6 @@ export default class LocationMap extends React.PureComponent {
                         onMapMounted: ref => {
                             refs.map = ref;
                         },
-                        onBoundsChanged: () => {
-                            this.setState({
-                                bounds: refs.map.getBounds(),
-                                center: refs.map.getCenter(),
-                            })
-                        },
                         onSearchBoxMounted: ref => {
                             refs.searchBox = ref;
                         },
@@ -95,7 +89,6 @@ export default class LocationMap extends React.PureComponent {
                 ref={props.onMapMounted}
                 defaultZoom={13}
                 center={props.center}
-                onBoundsChanged={props.onBoundsChanged}
             >
                 <SearchBox
                     ref={props.onSearchBoxMounted}
