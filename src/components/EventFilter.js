@@ -16,21 +16,21 @@ import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";
 import DateTimeField from "./DateTimeField";
 
-const defaultFilter = {
-        activity : 'All',
-        location : {lng : 11.587, lat : 48.145},
-        locName : "München, DE",
-        radius : 3,
-        start_date: new Date(),
-        start_time: undefined,
-        end_date: undefined,
-        end_time: undefined
-    };
-
 class EventFilter extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const defaultFilter = {
+            activity : 'All',
+            location : {lng : 11.587, lat : 48.145},
+            locName : "München, DE",
+            radius : 3,
+            start_date: new Date(),
+            start_time: undefined,
+            end_date: undefined,
+            end_time: undefined
+        };
         this.state = {
             filter : defaultFilter,
             activities : undefined
@@ -110,6 +110,16 @@ class EventFilter extends React.Component {
         this.setState({filter : filter});
     }
     resetFilter(){
+        const defaultFilter = {
+            activity : 'All',
+            location : {lng : 11.587, lat : 48.145},
+            locName : "München, DE",
+            radius : 3,
+            start_date: new Date(),
+            start_time: undefined,
+            end_date: undefined,
+            end_time: undefined
+        };
         this.setState({
             filter : defaultFilter
         });
@@ -191,7 +201,7 @@ class EventFilter extends React.Component {
                                     <FormControl placeholder="Radius"
                                                  componentClass="select"
                                                  onChange = {this.handleRadiusChange}
-                                                    defaultValue = {this.state.filter.radius}>
+                                                    value = {this.state.filter.radius}>
                                         <option value={1} key={"1km"}>1km</option>
                                         <option value={3} key={"3km"}>3km</option>
                                         <option value={5} key={"5km"}>5km</option>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import {PageHeader, Grid, Row, Col, Modal, Button} from 'react-bootstrap';
+import {PageHeader, Grid, Row, Col, Button} from 'react-bootstrap';
 import EventFilter from '../components/EventFilter';
 import EventMap from '../components/EventMap';
 import Page from '../components/Page';
@@ -12,6 +12,7 @@ import EventCardStack from "../components/EventCardsStack";
 import EventDetailsModal from "../components/EventDetailsModal";
 import InfoModal from "../components/InfoModal";
 import UserService from "../services/UserService";
+import EventListModal from "../components/EventListModal";
 
 
 export class JoinEventView extends React.Component {
@@ -22,7 +23,9 @@ export class JoinEventView extends React.Component {
         this.state = {
             events : undefined,
             showDetails : false,
+            showList : false,
             selectedEvent : undefined,
+            selectedEvents : undefined,
             info : {
                 showInfo : false,
                 body : undefined,
@@ -43,6 +46,8 @@ export class JoinEventView extends React.Component {
         this.hideInfoModal = this.hideInfoModal.bind(this);
         this.showEventDetails= this.showEventDetails.bind(this);
         this.hideEventDetails= this.hideEventDetails.bind(this);
+        this.showEventList= this.showEventList.bind(this);
+        this.hideEventList= this.hideEventList.bind(this);
     }
 
     componentWillMount(){
@@ -73,6 +78,42 @@ export class JoinEventView extends React.Component {
         });
     }
 
+    updateCenter(loc, rad){
+        this.setState({center : loc, radius : rad});
+    }
+
+    render() {
+        return (
+            <Page>
+                {this.state.showDetails && <EventDetailsModal event = {this.state.selectedEvent} show={this.state.showDetails}
+                                                              handleClose = {this.hideEventDetails} joinEvent = {this.joinEvent} />}
+                {this.state.showList && <EventListModal events = {this.state.selectedEvents} show={this.state.showList}
+                                                              handleClose = {this.hideEventList} showEventDetails = {this.showEventDetails} />}
+                {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
+                                                        type={this.state.info.type} handleClose={this.hideInfoModal}/>}
+                <Grid>
+                    <Row>
+                        <Col xs={12} sm={12}><PageHeader style={{marginTop : '10px',}}>
+                            <small>Join Event</small>
+                        </PageHeader></Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={12} md={3}><EventFilter onFilterSubmit = {this.loadEvents} locationCallback = {this.updateCenter} /></Col>
+                        <Col xsHidden sm={12} md={9}>
+                            <EventMap events = {this.state.events} center = {this.state.center} radius = {this.state.radius}
+                                      showEventDetails = {this.showEventDetails}
+                                      showEventList = {this.showEventList}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={12}><EventCardStack events = {this.state.events} showEventDetails = {this.showEventDetails} joinEvent={this.joinEvent}/></Col>
+                    </Row>
+                </Grid>
+            </Page>
+        );
+    }
+
     showInfoModal(body, type){
         let info = this.state.info;
         info.showInfo = true;
@@ -101,34 +142,17 @@ export class JoinEventView extends React.Component {
         });
     }
 
-    updateCenter(loc, rad){
-        this.setState({center : loc, radius : rad});
+    showEventList(events){
+        this.setState({
+            showList : true,
+            selectedEvents : events
+        });
     }
 
-    render() {
-        return (
-            <Page>
-                {this.state.showDetails && <EventDetailsModal event = {this.state.selectedEvent} show={this.state.showDetails}
-                                                              handleClose = {this.hideEventDetails} joinEvent = {this.joinEvent} />}
-                {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
-                                                        type={this.state.info.type} handleClose={this.hideInfoModal}/>}
-                <Grid>
-                    <Row>
-                        <Col xs={12} sm={12}><PageHeader style={{marginTop : '10px',}}>
-                            <small>Join Event</small>
-                        </PageHeader></Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={12} md={3}><EventFilter onFilterSubmit = {this.loadEvents} locationCallback = {this.updateCenter} /></Col>
-                        <Col xsHidden sm={12} md={9}>
-                            <EventMap events = {this.state.events} center = {this.state.center} radius = {this.state.radius} showEventDetails = {this.showEventDetails}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} sm={12}><EventCardStack events = {this.state.events} showEventDetails = {this.showEventDetails} joinEvent={this.joinEvent}/></Col>
-                    </Row>
-                </Grid>
-            </Page>
-        );
+    hideEventList(){
+        this.setState({
+            showList : false,
+            selectedEvents : undefined
+        });
     }
 }

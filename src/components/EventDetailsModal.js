@@ -1,7 +1,6 @@
-import {Button, Col, Glyphicon, Grid, Label, ListGroup, ListGroupItem, Modal, Panel, Row} from 'react-bootstrap';
+import {Button, Glyphicon, Label, ListGroup, ListGroupItem, Modal} from 'react-bootstrap';
 import React from "react";
 import Moment from "react-moment";
-import EventService from "../services/EventService";
 import UserService from "../services/UserService";
 
 export default class EventDetailsModal extends React.Component {
