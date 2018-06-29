@@ -47,6 +47,11 @@ export default class LocationDetailsModal extends React.Component {
                 </ListGroup>
             </Modal.Body>
             <Modal.Footer>
+                <Button bsStyle={'primary'} onClick={() => {
+                    this.props.handleClose();
+                    this.props.selectLocation(location);
+                }}>Select</Button>
+                {' '}
                 <Button onClick={() => {
                     this.props.handleClose();
                 }}>Close</Button>

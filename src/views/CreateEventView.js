@@ -55,6 +55,7 @@ export class CreateEventView extends React.Component {
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleLocationTextChange = this.handleLocationTextChange.bind(this);   // On Textfield change
         this.handleLocationMapChange = this.handleLocationMapChange.bind(this);     // On Marker click
+        this.updateLocation = this.updateLocation.bind(this);                       // On Select click
         this.handleSubmit = this.handleSubmit.bind(this);
         this.setModal = this.setModal.bind(this);
         this.showLocationDetails= this.showLocationDetails.bind(this);
@@ -154,6 +155,13 @@ export class CreateEventView extends React.Component {
     }
 
     handleLocationMapChange(location) {
+        this.setState({
+            showDetails : true,
+            selectedLocation : location
+        });
+    }
+
+    updateLocation(location) {
         let name = location.name;
         let id = location.id;
         let activities = location.activities
@@ -165,8 +173,8 @@ export class CreateEventView extends React.Component {
             form: form,
             locationName: name,
             activities: activities,
-            showDetails : true,
-            selectedLocation : location
+            showDetails : false,
+            selectedLocation : undefined
         });
     }
 
@@ -295,7 +303,7 @@ export class CreateEventView extends React.Component {
         return (
             <Page>
                 {this.state.showDetails && <LocationDetailsModal location = {this.state.selectedLocation} show={this.state.showDetails}
-                                                              handleClose = {this.hideLocationDetails}/>}
+                                                              handleClose = {this.hideLocationDetails} selectLocation={this.updateLocation}/>}
                 {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
                                                         type={this.state.info.type} handleClose={ () => {this.setModal(false)}} />}
                 <Grid>
