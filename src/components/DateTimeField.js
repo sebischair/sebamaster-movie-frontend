@@ -62,7 +62,7 @@ export default class DateTimeField extends React.Component {
                     <FormControl
                         type="text"
                         placeholder="DD.MM.YYYY"
-                        value={this.props.date ? this.props.date.toLocaleDateString() : undefined}
+                        value={this.props.date ? this.props.date.toLocaleDateString() : ""}
                         onChange={() => {
                         }}
                     />
