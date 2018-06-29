@@ -43,6 +43,7 @@ export class AddLocationView extends React.Component {
         this.onLocationSet = this.onLocationSet.bind(this);
         this.isEverythingFilled = this.isEverythingFilled.bind(this);
         this.setModal = this.setModal.bind(this);
+        this.resetForm = this.resetForm.bind(this);
     }
 
     componentWillMount() {
@@ -90,6 +91,7 @@ export class AddLocationView extends React.Component {
         const sportPlace = this.state.form;
         SportPlaceService.createSportPlace(sportPlace).then((data) => {
             this.setModal(true, <div><h4>Successfully added location!</h4><p>{sportPlace.name}</p></div>, "success");
+            this.resetForm();
         }).catch((e) => {
             console.log(e);
             this.setModal(true, e, "danger");
@@ -100,7 +102,7 @@ export class AddLocationView extends React.Component {
         let result = [];
         if (this.state.activities) {
             this.state.activities.forEach((activity) => {
-                result.push(<Checkbox key={activity} onClick={e => this.handleCheckboxChange(activity, e.target.checked)} >{activity}</Checkbox>);
+                result.push(<Checkbox key={activity} checked={this.state.form.activities.includes(activity)} onChange={e => this.handleCheckboxChange(activity, e.target.checked)} >{activity}</Checkbox>);
             });
         }
         return result;
@@ -128,6 +130,22 @@ export class AddLocationView extends React.Component {
         info.body = body;
         info.type = type;
         this.setState({ info: info });
+    }
+
+    resetForm() {
+        this.setState({
+            form: {
+                name: '',
+                openingHours: '',
+                description: '',
+                loc: {
+                    type: 'Point',
+                    coordinates: []
+                },
+                activities: [],
+            },
+            locationName: ''
+        })
     }
 
     render() {
