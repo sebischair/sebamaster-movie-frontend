@@ -14,17 +14,19 @@ import SportPlaceService from "../services/SportPlaceService";
 import SportPlaceMap from "../components/SportPlaceMap";
 import UserService from "../services/UserService";
 import LocationDetailsModal from "../components/LocationDetailsModal";
+import {Typeahead} from 'react-bootstrap-typeahead';
+import Loading from 'react-loading-components';
 
 export class CreateEventView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            // form includes Attributes stored in Database
+            // form includes Attributes stored in Database on Submit
             form: {
                 name: '',
                 activity: '',
-                sportPlace: '',
+                selectedSportPlaceID: '',
                 maxParticipants: 2,
                 start_date: new Date(),
                 start_time: undefined,
@@ -33,12 +35,14 @@ export class CreateEventView extends React.Component {
                 description: '',
             },
             // Temporary Attributes for UI
-            activities: undefined,  // Possible Activities
+            activities: undefined,  // Possible Activities to render
             sportPlaces: undefined, // Filterd Sportplaces (by form:activity)
-            selectedLocation: undefined,
-            showDetails: false,
-            locationName: '',
-            // Info includes Attributes of Info Field
+            selectedLocationName: '',       // Name of currently selected Location (to display in Typefield)
+            locationValidation: undefined,  // To mark Typefield red/green
+            showDetails: false,             // shows details window
+            selectedLocation: undefined,    // Showed in details window
+            loaded: false,          // Marks if componentWillMount() finished -> render
+            // info is for user error messages
             info: {
                 showInfo: false,
                 body: undefined,
@@ -53,11 +57,11 @@ export class CreateEventView extends React.Component {
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleLocationTextChange = this.handleLocationTextChange.bind(this);   // On Textfield change
-        this.handleLocationMapChange = this.handleLocationMapChange.bind(this);     // On Marker click
-        this.updateLocation = this.updateLocation.bind(this);                       // On Select click
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.setModal = this.setModal.bind(this);
+        this.handleLocationTextChange = this.handleLocationTextChange.bind(this);
+        this.handleLocationSelect = this.handleLocationSelect.bind(this);   // On Marker / Search Box change
+        this.updateLocation = this.updateLocation.bind(this);   // On Select click
+        this.handleSubmit = this.handleSubmit.bind(this);   // Input validation and database entry
+        this.setModal = this.setModal.bind(this);   // Displays error message on input validation
         this.showLocationDetails= this.showLocationDetails.bind(this);
         this.hideLocationDetails= this.hideLocationDetails.bind(this);
     }
@@ -92,7 +96,10 @@ export class CreateEventView extends React.Component {
         // Read Sportplaces from database
         SportPlaceService.getSportPlaces().then((data) => {
             data.sort();
-            this.setState({ sportPlaces: data});
+            this.setState({
+                sportPlaces: data,
+                loaded: true
+            });
         }).catch((e) => {
             console.error(e);
             this.setState({
@@ -154,7 +161,14 @@ export class CreateEventView extends React.Component {
         this.setState({ form: form });
     }
 
-    handleLocationMapChange(location) {
+    handleLocationTextChange(input) {
+        this.setState({
+            locationValidation: "error",
+            selectedLocationName: input,
+        });
+    }
+
+    handleLocationSelect(location) {
         this.setState({
             showDetails : true,
             selectedLocation : location
@@ -163,23 +177,20 @@ export class CreateEventView extends React.Component {
 
     updateLocation(location) {
         let name = location.name;
-        let id = location.id;
+        let id = location._id;
         let activities = location.activities
         let form = this.state.form;
-        form.sportPlace = id;
+        form.selectedSportPlaceID = id;
         activities.sort();  // Sort alphabetical
         form.activity = activities[0];    // Set selected Activity on first in SportsPlace list
         this.setState({
             form: form,
-            locationName: name,
+            selectedLocationName: name,
             activities: activities,
             showDetails : false,
-            selectedLocation : undefined
+            selectedLocation : undefined,
+            locationValidation: "success"
         });
-    }
-
-    handleLocationTextChange(e) {
-        this.setState({ locationName: e.target.value });
     }
 
     handleSubmit(e) {
@@ -191,7 +202,7 @@ export class CreateEventView extends React.Component {
         if(!this.state.form.activity || this.state.form.activity == "Select Location first") {
             errorArray.push("Activity not set");
         }
-        if(!this.state.form.sportPlace) {
+        if(!this.state.form.selectedSportPlaceID) {
             errorArray.push("Location not set");
         }
         if(this.state.form.maxParticipants < 2) {
@@ -225,7 +236,7 @@ export class CreateEventView extends React.Component {
         let submitEvent = {};
         submitEvent.name = this.state.form.name;
         submitEvent.activity = this.state.form.activity;
-        submitEvent.sportPlace = this.state.form.sportPlace;
+        submitEvent.sportPlace = this.state.form.selectedSportPlaceID;
         submitEvent.maxParticipants = this.state.form.maxParticipants;
 
         if(this.state.form.start_date) {
@@ -252,7 +263,7 @@ export class CreateEventView extends React.Component {
         submitEvent.creator = UserService.getCurrentUser().id;
         submitEvent.participants = [submitEvent.creator];
         submitEvent.description = this.state.form.description;
-        submitEvent.sportPlace = this.state.form.sportPlace;
+        submitEvent.sportPlace = this.state.form.selectedSportPlaceID;
 
         EventService.createEvent(submitEvent).then((data) => {
             this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
@@ -300,6 +311,7 @@ export class CreateEventView extends React.Component {
     }
 
     render() {
+        if (!this.state.loaded) return <Loading type='tail_spin'/>;
         return (
             <Page>
                 {this.state.showDetails && <LocationDetailsModal location = {this.state.selectedLocation} show={this.state.showDetails}
@@ -350,7 +362,7 @@ export class CreateEventView extends React.Component {
                                             </Col>
 
                                             <Col xs={12} sm={12} md={12} lg={6}>
-                                                <FormGroup controlId="setLocation">
+                                                <FormGroup controlId="setActivity">
                                                     <ControlLabel>Activity</ControlLabel>
                                                     <InputGroup>
                                                         <InputGroup.Addon><Glyphicon glyph={'knight'}/></InputGroup.Addon>
@@ -360,19 +372,31 @@ export class CreateEventView extends React.Component {
                                                         </FormControl>
                                                     </InputGroup>
                                                     <HelpBlock>The activity list updates with location select.</HelpBlock>
-                                                    <ControlLabel>Location</ControlLabel>
+                                                </FormGroup>
+                                                <ControlLabel>Location</ControlLabel>
+                                                <FormGroup controlId="TypeaheadLocation" validationState = {this.state.locationValidation}>
                                                     <InputGroup>
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
-                                                        <FormControl
-                                                            type="text"
-                                                            value={this.state.locationName}
-                                                            placeholder="Location Name"
-                                                            onChange={this.handleLocationTextChange}>
-                                                        </FormControl>
+                                                        <Typeahead
+                                                            onChange={(location) => {
+                                                                if(location.length == 1) {
+                                                                    this.handleLocationSelect(location[0]);
+                                                                }
+                                                            }}
+                                                            onInputChange={(input) => {
+                                                                this.handleLocationTextChange(input);
+                                                            }}
+                                                            options={this.state.sportPlaces}
+                                                            labelKey="name"
+                                                            selected={[this.state.selectedLocationName]}
+                                                            maxResults={10}
+                                                            selectHintOnEnter={true}
+                                                            emptyLabel={'No matching locations found'}
+                                                            placeholder="Select a location..."
+                                                        />
                                                     </InputGroup>
-                                                    <HelpBlock>The location has to be selected via the map.</HelpBlock>
                                                     <br></br>
-                                                    <SportPlaceMap updateLocation={this.handleLocationMapChange}></SportPlaceMap>
+                                                    <SportPlaceMap updateLocation={this.handleLocationSelect}></SportPlaceMap>
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
