@@ -333,7 +333,7 @@ export class CreateEventView extends React.Component {
                                 <Panel.Body>
                                     <form>
                                         <Row>
-                                            <Col xs={12} sm={12} md={8} lg={4}>
+                                            <Col xs={12} sm={12} md={4} lg={4}>
                                                 <FormGroup controlId="setName">
                                                     <ControlLabel>Name</ControlLabel>
                                                     <FormControl
@@ -361,7 +361,7 @@ export class CreateEventView extends React.Component {
                                                 </FormGroup>
                                             </Col>
 
-                                            <Col xs={12} sm={12} md={12} lg={6}>
+                                            <Col xs={12} sm={12} md={8} lg={8}>
                                                 <FormGroup controlId="setActivity">
                                                     <ControlLabel>Activity</ControlLabel>
                                                     <InputGroup>
