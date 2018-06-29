@@ -25,6 +25,7 @@ class UserForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.resetForm = this.resetForm.bind(this);
         this.isValidInput = this.isValidInput.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     handleChangeUsername(e) {
@@ -42,6 +43,14 @@ class UserForm extends React.Component {
         };
 
         this.props.onSubmit(user);
+    }
+
+    handleKeyPress(target){
+        if(target.key === "Enter"){
+            if(this.isValidInput()){
+                this.handleSubmit();
+            }
+        }
     }
 
     resetForm() {
@@ -71,7 +80,9 @@ class UserForm extends React.Component {
                         </Col>
                         <Col sm={10}>
                             <FormControl type="text" placeholder="Username" value={this.state.username}
-                                         onChange={this.handleChangeUsername}/>
+                                         onChange={this.handleChangeUsername}
+                                         onKeyPress={this.handleKeyPress}
+                            />
                         </Col>
                     </FormGroup>
                     <FormGroup controlId="formHorizontalPassword">
@@ -80,7 +91,9 @@ class UserForm extends React.Component {
                         </Col>
                         <Col sm={10}>
                             <FormControl type="password" placeholder="Password" value={this.state.password}
-                                         onChange={this.handleChangePassword}/>
+                                         onChange={this.handleChangePassword}
+                                         onKeyPress={this.handleKeyPress}
+                            />
                         </Col>
                     </FormGroup>
                 </Form>
