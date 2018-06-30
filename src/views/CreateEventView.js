@@ -5,7 +5,6 @@ import React from 'react';
 import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox, HelpBlock } from 'react-bootstrap';
 
 import Page from '../components/Page';
-import ActivityService from '../services/ActivityService';
 import EventService from '../services/EventService';
 import InfoModal from '../components/InfoModal';
 import DateTimeField from "../components/DateTimeField";
@@ -32,10 +31,11 @@ export class CreateEventView extends React.Component {
                 start_time: undefined,
                 end_date: new Date(),
                 end_time: undefined,
+                repetitions: 0,
                 description: '',
             },
             // Temporary Attributes for UI
-            activities: undefined,  // Possible Activities to render
+            activities: ["Select Location first"],  // Possible Activities to render
             sportPlaces: undefined, // Filterd Sportplaces (by form:activity)
             selectedLocationName: '',       // Name of currently selected Location (to display in Typefield)
             locationValidation: undefined,  // To mark Typefield red/green
@@ -56,6 +56,7 @@ export class CreateEventView extends React.Component {
         this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
+        this.handleRepetitionNumberChange = this.handleRepetitionNumberChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleLocationTextChange = this.handleLocationTextChange.bind(this);
         this.handleLocationSelect = this.handleLocationSelect.bind(this);   // On Marker / Search Box change
@@ -70,32 +71,6 @@ export class CreateEventView extends React.Component {
     }
 
     componentWillMount() {
-        // Read possible activities from database
-        /*
-        ActivityService.getActivities().then((data) => {
-            data.sort();    // Alphabetic sort
-            let form = this.state.form;
-            form.activity = data[0];    // Set selected Activity on first in List
-            this.setState({
-                form: form,
-                activities: data
-            });
-        }).catch((e) => {
-            console.error(e);
-            this.setState({
-                error: e
-            });
-        });*/
-
-        // Initialize Activity field
-        let data = ["Select Location first"]
-        let form = this.state.form;
-        form.activity = data[0];
-        this.setState({
-            form: form,
-            activities: data
-        })
-
         // Read Sportplaces from database
         SportPlaceService.getSportPlaces().then((data) => {
             data.sort();
@@ -158,12 +133,19 @@ export class CreateEventView extends React.Component {
         this.setState({form : form});
     }
 
+    handleRepetitionNumberChange(number) {
+        let form = this.state.form;
+        form.repetitions = number;
+        this.setState({ form: form});
+    }
+
     handleDescriptionChange(e) {
         let form = this.state.form;
         form.description = e.target.value;
         this.setState({ form: form });
     }
 
+    // Changes in Textfield
     handleLocationTextChange(input) {
         let form = this.state.form;
         form.selectedSportPlaceID = '';
@@ -177,6 +159,7 @@ export class CreateEventView extends React.Component {
         });
     }
 
+    // Click in Textfield or Map -> Show Details
     handleLocationSelect(location) {
         this.setState({
             showDetails : true,
@@ -184,6 +167,7 @@ export class CreateEventView extends React.Component {
         });
     }
 
+    // Selection of Location -> Set in Form
     updateLocation(location) {
         let name = location.name;
         let id = location._id;
@@ -215,13 +199,18 @@ export class CreateEventView extends React.Component {
         }
 
         this.clearForm();
-        // Send parsed Input to backend and success
-        EventService.createEvent(submitEvent).then((data) => {
-            this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
-        }).catch((e) => {
-            console.log(e);
-            this.setModal(true, e, "danger");
-        });
+
+        // Send parsed Input to backend and show success message
+        for(let i=0;i<this.state.form.repetitions+1;i++){
+            EventService.createEvent(submitEvent).then((data) => {
+                this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
+            }).catch((e) => {
+                console.log(e);
+                this.setModal(true, e, "danger");
+            });
+            submitEvent.start.setDate(submitEvent.start.getDate() + 7);
+            submitEvent.end.setDate(submitEvent.end.getDate() + 7);
+        }
     }
 
     validateInput() {
@@ -279,7 +268,7 @@ export class CreateEventView extends React.Component {
             if (this.state.form.start_time) {
                 let split = this.state.form.start_time.split(':');
                 if (split.length == 2) {
-                    submitEvent.start.setHours(split[0], split[1], 0);
+                    submitEvent.start.setHours(split[0], split[1], 30);
                 } else {
                     let errorString = "Start time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
@@ -293,7 +282,7 @@ export class CreateEventView extends React.Component {
             if (this.state.form.end_time) {
                 let split = this.state.form.end_time.split(':');
                 if (split.length == 2) {
-                    submitEvent.end.setHours(split[0], split[1], 59);
+                    submitEvent.end.setHours(split[0], split[1], 30);
                 } else {
                     let errorString = "End time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
@@ -321,6 +310,7 @@ export class CreateEventView extends React.Component {
                 start_time: undefined,
                 end_date: new Date(),
                 end_time: undefined,
+                repetitions: 0,
                 description: '',
             },
             activities: ["Select Location first"],
@@ -377,7 +367,7 @@ export class CreateEventView extends React.Component {
         return (
             <Page>
                 {this.state.showDetails && <LocationDetailsModal location = {this.state.selectedLocation} show={this.state.showDetails}
-                                                              handleClose = {this.hideLocationDetails} selectLocation={this.updateLocation}/>}
+                                                                 handleClose = {this.hideLocationDetails} selectLocation={this.updateLocation}/>}
                 {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
                                                         type={this.state.info.type} handleClose={ () => {this.setModal(false)}} />}
                 <Grid>
@@ -411,6 +401,11 @@ export class CreateEventView extends React.Component {
                                                 </FormGroup>
                                                 <DateTimeField label={"Start Time"} date={this.state.form.start_date} time={this.state.form.start_time} handleDateChange = {this.handleStartDateChange} handleTimeChange = {this.handleStartTimeChange}/>
                                                 <DateTimeField label={"End Time"} date={this.state.form.end_date} time={this.state.form.end_time} handleDateChange = {this.handleEndDateChange} handleTimeChange = {this.handleEndTimeChange}/>
+                                                <FormGroup controlId="setRepetition">
+                                                    <ControlLabel>Weekly Repetitions</ControlLabel>
+                                                    <CounterInput value={this.state.form.repetitions} min={0} max={50} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { this.handleRepetitionNumberChange(value) } } />
+                                                    <HelpBlock>Number of times the Event is repeated weekly</HelpBlock>
+                                                </FormGroup>
                                                 <FormGroup controlId="setDescription">
                                                     <ControlLabel>Description</ControlLabel>
                                                     <FormControl
