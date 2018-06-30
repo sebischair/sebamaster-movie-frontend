@@ -41,7 +41,6 @@ export default class DateTimeField extends React.Component {
         }
         let hour = parseInt(split[0]);
         let min = parseInt(split[1]);
-        //console.log(hour + " " + min);
         if(hour === undefined || hour === "" || isNaN(hour) || min == undefined || min === "" || isNaN(min) || hour < 0 || hour > 24 || min > 59 || min < 0){
             this.setState({validation: "error"});
         } else {

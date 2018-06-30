@@ -56,11 +56,25 @@ export default class EventMap extends React.Component {
 
                     this.setState({
                         center : this.props.center,
+                        circle : this.props.center,
                         radius : this.props.radius,
                         markers : this.props.markers,
-                        zoom : 13,
+                        zoom : 12,
                         onMapMounted: (ref) => {
-                            refs.map = ref
+                            refs.map = ref;
+                            // Set viewport to display all events found
+                            if(refs.map) {
+                                if (this.state.markers.length > 0) {
+                                    const bounds = new google.maps.LatLngBounds();
+                                    this.state.markers.map((marker, i) => {
+                                        bounds.extend(new google.maps.LatLng(
+                                            marker.props.position.lat,
+                                            marker.props.position.lng
+                                        ));
+                                    });
+                                    refs.map.fitBounds(bounds);
+                                }
+                            }
                         },
                         onZoomChanged: () => {
                             this.setState({
@@ -79,7 +93,6 @@ export default class EventMap extends React.Component {
                                     break;
                                 }
                             }
-
                             if(showList){
                                 this.props.showEventList(events);
                             }
@@ -95,7 +108,7 @@ export default class EventMap extends React.Component {
                                 refs.map.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.setZoom(this.state.zoom);
                             }
                         }
-                    })
+                    });
                 }
             }),
             withScriptjs,
@@ -107,7 +120,7 @@ export default class EventMap extends React.Component {
                 ref={props.onMapMounted}
                 onZoomChanged={props.onZoomChanged}
             >
-                <Circle center={props.center} radius={props.radius*1000}
+                <Circle center={props.circle} radius={props.radius*1000}
                         options = {{clickable : false,
                             fillOpacity : 0.15,
                             fillColor : "#1E90FF",

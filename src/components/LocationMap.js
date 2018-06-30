@@ -63,7 +63,6 @@ export default class LocationMap extends React.PureComponent {
                             refs.map = ref;
                         },
                         onRightClick: target => {
-                            debugger;
                             this.props.rightClickCallback({lat : target.latLng.lat(), lng : target.latLng.lng()});
                         }
                     })
