@@ -1,18 +1,18 @@
 {
-  "name": "sebamaster-movie-frontend",
-  "version": "0.0.1",
-  "description": "SEBAMaster Movie Frontend Application React",
+  "name": "sebamaster-meet2sport-frontend",
+  "version": "0.1.0",
+  "description": "SEBAMaster Meet2Sport Frontend Application React",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/sebischair/sebamaster-movie-frontend"
+    "url": "https://github.com/markushinz/sebamaster-meet2sport-frontend"
   },
-  "author": "sebis",
+  "author": "team36",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sebischair/sebamaster-movie-frontend/issues"
   },
-  "homepage": "https://github.com/sebischair/sebamaster-movie-frontend#readme",
+  "homepage": "https://https://github.com/markushinz/sebamaster-meet2sport-frontend#readme",
   "engines": {
     "node": ">=4.3"
   },
