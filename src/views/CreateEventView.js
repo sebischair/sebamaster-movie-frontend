@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox, HelpBlock } from 'react-bootstrap';
+import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, HelpBlock } from 'react-bootstrap';
 
 import Page from '../components/Page';
 import EventService from '../services/EventService';

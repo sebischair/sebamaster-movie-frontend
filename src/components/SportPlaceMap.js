@@ -1,6 +1,4 @@
-
 import React from "react";
-import { Button, Glyphicon, ListGroup, ListGroupItem } from "react-bootstrap";
 import SportPlaceService from "../services/SportPlaceService";
 
 const fetch = require("isomorphic-fetch");
