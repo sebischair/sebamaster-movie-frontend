@@ -108,6 +108,7 @@ export class CreateEventView extends React.Component {
     handleStartDateChange(day){
         let form = this.state.form;
         form.start_date = day;
+        form.end_date = day;    // Change end date with start date
         this.setState({form : form});
         // Close date picker without using refs
         document.body.click();
