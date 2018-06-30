@@ -23,7 +23,7 @@ class EventFilter extends React.Component {
 
         const defaultFilter = {
             activity : 'All',
-            location : {lng : 11.587, lat : 48.145},
+            location : {lng : 11.576006, lat : 48.137079},
             locName : "München, DE",
             radius : 3,
             start_date: new Date(),
@@ -65,6 +65,7 @@ class EventFilter extends React.Component {
             });
         });
 
+        // Set location + radius for map
         this.props.locationCallback(this.state.filter.location, this.state.filter.radius);
     }
 
@@ -112,7 +113,7 @@ class EventFilter extends React.Component {
     resetFilter(){
         const defaultFilter = {
             activity : 'All',
-            location : {lng : 11.587, lat : 48.145},
+            location : {lng : 11.576006, lat : 48.137079},
             locName : "München, DE",
             radius : 3,
             start_date: new Date(),
@@ -126,36 +127,53 @@ class EventFilter extends React.Component {
         this.handleFilterSubmit();
     }
 
-    // build consumable filter object
+    // build consumable filter object for backend request
     handleFilterSubmit(){
         let filter = {};
+        // Specify start time
         if(this.state.filter.start_date) {
             filter.start = this.state.filter.start_date;
-            filter.start.setHours(0, 0, 0);
+            // Check and validate optional hour:minute field, overwrite current start time only on valid input
             if (this.state.filter.start_time) {
                 let split = this.state.filter.start_time.split(':');
                 if (split.length == 2) {
-                    filter.start.setHours(split[0], split[1], 0);
+                    let hour = parseInt(split[0]);
+                    let min = parseInt(split[1]);
+                    if(hour !== undefined && hour !== "" && !isNaN(hour) && min !== undefined && min !== "" && !isNaN(min) && hour >= 0 && hour < 24 && min <= 59 && min >= 0){
+                        filter.start.setHours(hour, min, 0);
+                    }
                 }
+            } else {
+                filter.start.setHours(0, 0, 0);
             }
         }
+        // Specify end time
         if(this.state.filter.end_date) {
             filter.end = this.state.filter.end_date;
-            filter.end.setHours(23, 59, 59);
+            // Check and validate optional hour:minute, overwrite current end time only on valid input
             if (this.state.filter.end_time) {
                 let split = this.state.filter.end_time.split(':');
                 if (split.length == 2) {
-                    filter.end.setHours(split[0], split[1], 59);
+                    let hour = parseInt(split[0]);
+                    let min = parseInt(split[1]);
+                    if(hour !== undefined && hour !== "" && !isNaN(hour) && min !== undefined && min !== "" && !isNaN(min) && hour >= 0 && hour < 24 && min <= 59 && min >= 0){
+                        filter.end.setHours(hour, min, 59);
+                    }
                 }
+            } else {
+                filter.end.setHours(23, 59, 59);
             }
         }
+        // Specify selected activity
         if(this.state.filter.activity !== "All"){
             filter.activity = this.state.filter.activity;
         }
+        // Specify location filter string
         if(this.state.filter.location && this.state.filter.radius){
             filter.location = this.state.filter.location.lng + "," + this.state.filter.location.lat + "," + this.state.filter.radius;
         }
 
+        // Update map location and submit filter
         this.props.locationCallback(this.state.filter.location, this.state.filter.radius);
         this.props.onFilterSubmit(filter);
     }
