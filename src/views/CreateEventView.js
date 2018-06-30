@@ -162,9 +162,15 @@ export class CreateEventView extends React.Component {
     }
 
     handleLocationTextChange(input) {
+        let form = this.state.form;
+        form.selectedSportPlaceID = '';
+        form.activity = undefined;
         this.setState({
+            form: form,
+            activities: ["Select Location first"],
             locationValidation: "error",
             selectedLocationName: input,
+            selectedLocation: undefined
         });
     }
 
@@ -232,7 +238,7 @@ export class CreateEventView extends React.Component {
             return;
         }
 
-        // Create json Object to send to backend
+        // Create json Object and parse form inputs to send to backend
         let submitEvent = {};
         submitEvent.name = this.state.form.name;
         submitEvent.activity = this.state.form.activity;
@@ -246,6 +252,10 @@ export class CreateEventView extends React.Component {
                 let split = this.state.form.start_time.split(':');
                 if (split.length == 2) {
                     submitEvent.start.setHours(split[0], split[1], 0);
+                } else {
+                    let errorString = "Start time not set properly";
+                    this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
+                    return;
                 }
             }
         }
@@ -256,6 +266,10 @@ export class CreateEventView extends React.Component {
                 let split = this.state.form.end_time.split(':');
                 if (split.length == 2) {
                     submitEvent.end.setHours(split[0], split[1], 59);
+                } else {
+                    let errorString = "End time not set properly";
+                    this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
+                    return;
                 }
             }
         }
@@ -265,6 +279,7 @@ export class CreateEventView extends React.Component {
         submitEvent.description = this.state.form.description;
         submitEvent.sportPlace = this.state.form.selectedSportPlaceID;
 
+        // Send to backend and success
         EventService.createEvent(submitEvent).then((data) => {
             this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
         }).catch((e) => {
