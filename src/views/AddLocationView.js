@@ -212,11 +212,11 @@ export class AddLocationView extends React.Component {
                                                         <LocationSearchField locName={this.state.locationName} handleLocationChange={this.onLocationSet}/>
                                                         <InputGroup.Addon><Glyphicon glyph={'map-marker'} /></InputGroup.Addon>
                                                     </InputGroup>
-                                                    <HelpBlock>Type in address or name of location.</HelpBlock>
+                                                    <HelpBlock>Type in address of location or select via right click on map.</HelpBlock>
                                                     <br></br>
                                                     <LocationMap marker = {this.state.form.loc.coordinates.length === 2 ?
                                                         {position : {lng : this.state.form.loc.coordinates[0], lat : this.state.form.loc.coordinates[1]}}
-                                                        : undefined}/>
+                                                        : undefined} onLocationSet = {this.onLocationSet} />
                                                 </FormGroup>
                                             </Col>
                                             <Col xs={12} sm={12}>
