@@ -40,7 +40,6 @@ class EventFilter extends React.Component {
         };
 
         Geocode.setApiKey("AIzaSyC022vcczx-Uvw4FXrky0qbXtApe1Vi3GU");
-        Geocode.enableDebug();
 
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
