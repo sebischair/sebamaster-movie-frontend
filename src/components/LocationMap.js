@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Button, Glyphicon, ListGroup, ListGroupItem } from "react-bootstrap";
+import Geocode from "react-geocode";
 
 const {
     withScriptjs,
@@ -8,7 +8,6 @@ const {
     GoogleMap,
     Marker,
 } = require("react-google-maps");
-const { SearchBox } = require("react-google-maps/lib/components/places/SearchBox");
 
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
@@ -18,6 +17,10 @@ export default class LocationMap extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
+        Geocode.setApiKey("AIzaSyC022vcczx-Uvw4FXrky0qbXtApe1Vi3GU");
+        Geocode.enableDebug();
+        this.onRightClick = this.onRightClick.bind(this);
     }
 
     shouldComponentUpdate(nextProps, nextState){
@@ -25,6 +28,18 @@ export default class LocationMap extends React.PureComponent {
             return false;
         }
         return true;
+    }
+
+    onRightClick(loc){
+        Geocode.fromLatLng(loc.lat, loc.lng).then(
+            response => {
+                const address = response.results[0].formatted_address;
+                this.props.onLocationSet(address,loc);
+            },
+            error => {
+                console.error(error);
+            }
+        );
     }
 
     render() {
@@ -46,6 +61,10 @@ export default class LocationMap extends React.PureComponent {
                         marker : this.props.marker,
                         onMapMounted: ref => {
                             refs.map = ref;
+                        },
+                        onRightClick: target => {
+                            debugger;
+                            this.props.rightClickCallback({lat : target.latLng.lat(), lng : target.latLng.lng()});
                         }
                     })
                 },
@@ -57,11 +76,12 @@ export default class LocationMap extends React.PureComponent {
                 ref={props.onMapMounted}
                 defaultZoom={13}
                 defaultCenter={props.marker ? props.marker.position : props.center}
+                onRightClick={props.onRightClick}
             >
                 {props.marker ? <Marker position={props.marker.position} /> : undefined }
             </GoogleMap>
         );
 
-        return <MapWithASearchBox marker = {this.props.marker} />;
+        return <MapWithASearchBox marker = {this.props.marker} rightClickCallback = {this.onRightClick} />;
     }
 }
