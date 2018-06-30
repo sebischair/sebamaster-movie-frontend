@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import {geolocated} from 'react-geolocated';
 
 import {
     Button,
@@ -15,6 +16,7 @@ import ActivityService from '../services/ActivityService'
 import 'react-day-picker/lib/style.css';
 import {LocationSearchField} from "./LocationSearchField";
 import DateTimeField from "./DateTimeField";
+import Geocode from "react-geocode";
 
 class EventFilter extends React.Component {
 
@@ -33,8 +35,12 @@ class EventFilter extends React.Component {
         };
         this.state = {
             filter : defaultFilter,
-            activities : undefined
+            activities : undefined,
+            initialLocFetch : false
         };
+
+        Geocode.setApiKey("AIzaSyC022vcczx-Uvw4FXrky0qbXtApe1Vi3GU");
+        Geocode.enableDebug();
 
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
@@ -66,6 +72,30 @@ class EventFilter extends React.Component {
         });
 
         this.props.locationCallback(this.state.filter.location, this.state.filter.radius);
+    }
+
+    // If Geolocation is activated, reload
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.initialLocFetch && nextProps.isGeolocationAvailable && nextProps.isGeolocationEnabled){
+            if(nextProps.coords && nextProps.coords.latitude && nextProps.coords.longitude){
+                let that = this;
+                this.setState({initialLocFetch : true});
+                // Get address from latidude & longitude.
+                Geocode.fromLatLng(nextProps.coords.latitude, nextProps.coords.longitude).then(
+                    response => {
+                        let filter = that.state.filter;
+                        filter.location = { lat : nextProps.coords.latitude, lng : nextProps.coords.longitude};
+                        filter.locName = response.results[0].formatted_address;
+                        that.setState({filter : filter});
+                        that.handleFilterSubmit();
+                        that.props.locationCallback(that.state.filter.location, that.state.filter.radius);
+                    },
+                    error => {
+                        console.error(error);
+                    }
+                );
+            }
+        }
     }
 
     handleActivityChange(e){
@@ -224,4 +254,4 @@ class EventFilter extends React.Component {
     }
 };
 
-export default EventFilter;
+export default geolocated()(EventFilter);
