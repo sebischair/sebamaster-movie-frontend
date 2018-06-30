@@ -61,6 +61,9 @@ export class CreateEventView extends React.Component {
         this.handleLocationSelect = this.handleLocationSelect.bind(this);   // On Marker / Search Box change
         this.updateLocation = this.updateLocation.bind(this);   // On Select click
         this.handleSubmit = this.handleSubmit.bind(this);   // Input validation and database entry
+        this.validateInput = this.validateInput.bind(this);
+        this.parseInput = this.parseInput.bind(this);
+        this.clearForm = this.clearForm.bind(this);
         this.setModal = this.setModal.bind(this);   // Displays error message on input validation
         this.showLocationDetails= this.showLocationDetails.bind(this);
         this.hideLocationDetails= this.hideLocationDetails.bind(this);
@@ -201,6 +204,28 @@ export class CreateEventView extends React.Component {
 
     handleSubmit(e) {
         // Input Validation
+        if(!this.validateInput()) {
+            return;
+        }
+
+        // parse Input
+        let submitEvent = this.parseInput();
+        if(!submitEvent) {
+            return;
+        }
+
+        this.clearForm();
+        // Send parsed Input to backend and success
+        EventService.createEvent(submitEvent).then((data) => {
+            this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
+        }).catch((e) => {
+            console.log(e);
+            this.setModal(true, e, "danger");
+        });
+    }
+
+    validateInput() {
+        // Input Validation
         let errorArray = [];
         if(!this.state.form.name) {
             errorArray.push("Event Name not set");
@@ -235,10 +260,13 @@ export class CreateEventView extends React.Component {
                 errorString += ", " + errorArray[i];
             }
             this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
-            return;
+            return false;
         }
+        return true;
+    }
 
-        // Create json Object and parse form inputs to send to backend
+    parseInput() {
+        // Create json Object and parse form inputs
         let submitEvent = {};
         submitEvent.name = this.state.form.name;
         submitEvent.activity = this.state.form.activity;
@@ -255,7 +283,7 @@ export class CreateEventView extends React.Component {
                 } else {
                     let errorString = "Start time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
-                    return;
+                    return false;
                 }
             }
         }
@@ -269,7 +297,7 @@ export class CreateEventView extends React.Component {
                 } else {
                     let errorString = "End time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
-                    return;
+                    return false;
                 }
             }
         }
@@ -279,14 +307,33 @@ export class CreateEventView extends React.Component {
         submitEvent.description = this.state.form.description;
         submitEvent.sportPlace = this.state.form.selectedSportPlaceID;
 
-        // Send to backend and success
-        EventService.createEvent(submitEvent).then((data) => {
-            this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
-        }).catch((e) => {
-            console.log(e);
-            this.setModal(true, e, "danger");
-        });
+        return submitEvent;
+    }
 
+    clearForm() {
+        this.setState({
+            form: {
+                name: '',
+                activity: '',
+                selectedSportPlaceID: '',
+                maxParticipants: 2,
+                start_date: new Date(),
+                start_time: undefined,
+                end_date: new Date(),
+                end_time: undefined,
+                description: '',
+            },
+            activities: ["Select Location first"],
+            selectedLocationName: '',
+            locationValidation: undefined,
+            showDetails: false,
+            selectedLocation: undefined,
+            info: {
+                showInfo: false,
+                body: undefined,
+                type: undefined
+            },
+        });
     }
 
     setModal(showInfo, body, type) {
