@@ -31,6 +31,7 @@ export class CreateEventView extends React.Component {
                 start_time: undefined,
                 end_date: new Date(),
                 end_time: undefined,
+                repetitions: 0,
                 description: '',
             },
             // Temporary Attributes for UI
@@ -55,6 +56,7 @@ export class CreateEventView extends React.Component {
         this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
+        this.handleRepetitionNumberChange = this.handleRepetitionNumberChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleLocationTextChange = this.handleLocationTextChange.bind(this);
         this.handleLocationSelect = this.handleLocationSelect.bind(this);   // On Marker / Search Box change
@@ -131,6 +133,12 @@ export class CreateEventView extends React.Component {
         this.setState({form : form});
     }
 
+    handleRepetitionNumberChange(number) {
+        let form = this.state.form;
+        form.repetitions = number;
+        this.setState({ form: form});
+    }
+
     handleDescriptionChange(e) {
         let form = this.state.form;
         form.description = e.target.value;
@@ -191,13 +199,18 @@ export class CreateEventView extends React.Component {
         }
 
         this.clearForm();
-        // Send parsed Input to backend and success
-        EventService.createEvent(submitEvent).then((data) => {
-            this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
-        }).catch((e) => {
-            console.log(e);
-            this.setModal(true, e, "danger");
-        });
+
+        // Send parsed Input to backend and show success message
+        for(let i=0;i<this.state.form.repetitions+1;i++){
+            EventService.createEvent(submitEvent).then((data) => {
+                this.setModal(true, <div><h4>Successfully added Event!</h4><p>{submitEvent.name}</p></div>, "success");
+            }).catch((e) => {
+                console.log(e);
+                this.setModal(true, e, "danger");
+            });
+            submitEvent.start.setDate(submitEvent.start.getDate() + 7);
+            submitEvent.end.setDate(submitEvent.end.getDate() + 7);
+        }
     }
 
     validateInput() {
@@ -255,7 +268,7 @@ export class CreateEventView extends React.Component {
             if (this.state.form.start_time) {
                 let split = this.state.form.start_time.split(':');
                 if (split.length == 2) {
-                    submitEvent.start.setHours(split[0], split[1], 0);
+                    submitEvent.start.setHours(split[0], split[1], 30);
                 } else {
                     let errorString = "Start time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
@@ -269,7 +282,7 @@ export class CreateEventView extends React.Component {
             if (this.state.form.end_time) {
                 let split = this.state.form.end_time.split(':');
                 if (split.length == 2) {
-                    submitEvent.end.setHours(split[0], split[1], 59);
+                    submitEvent.end.setHours(split[0], split[1], 30);
                 } else {
                     let errorString = "End time not set properly";
                     this.setModal(true, <div><h4>The following Error(s) occurred</h4><p>{errorString}</p></div>, "danger");
@@ -297,6 +310,7 @@ export class CreateEventView extends React.Component {
                 start_time: undefined,
                 end_date: new Date(),
                 end_time: undefined,
+                repetitions: 0,
                 description: '',
             },
             activities: ["Select Location first"],
@@ -387,6 +401,11 @@ export class CreateEventView extends React.Component {
                                                 </FormGroup>
                                                 <DateTimeField label={"Start Time"} date={this.state.form.start_date} time={this.state.form.start_time} handleDateChange = {this.handleStartDateChange} handleTimeChange = {this.handleStartTimeChange}/>
                                                 <DateTimeField label={"End Time"} date={this.state.form.end_date} time={this.state.form.end_time} handleDateChange = {this.handleEndDateChange} handleTimeChange = {this.handleEndTimeChange}/>
+                                                <FormGroup controlId="setRepetition">
+                                                    <ControlLabel>Weekly Repetitions</ControlLabel>
+                                                    <CounterInput value={this.state.form.repetitions} min={0} max={50} glyphPlus={{glyph:'glyphicon glyphicon-plus', position:'right'}} glyphMinus={{glyph:'glyphicon glyphicon-minus', position:'left'}} onChange={ (value) => { this.handleRepetitionNumberChange(value) } } />
+                                                    <HelpBlock>Number of times the Event is repeated weekly</HelpBlock>
+                                                </FormGroup>
                                                 <FormGroup controlId="setDescription">
                                                     <ControlLabel>Description</ControlLabel>
                                                     <FormControl
