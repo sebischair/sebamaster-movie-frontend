@@ -5,7 +5,6 @@ import React from 'react';
 import { PageHeader, Grid, Row, Col, Panel, Glyphicon, FormGroup, ControlLabel, FormControl, InputGroup, Button, Checkbox, HelpBlock } from 'react-bootstrap';
 
 import Page from '../components/Page';
-import ActivityService from '../services/ActivityService';
 import EventService from '../services/EventService';
 import InfoModal from '../components/InfoModal';
 import DateTimeField from "../components/DateTimeField";
@@ -35,7 +34,7 @@ export class CreateEventView extends React.Component {
                 description: '',
             },
             // Temporary Attributes for UI
-            activities: undefined,  // Possible Activities to render
+            activities: ["Select Location first"],  // Possible Activities to render
             sportPlaces: undefined, // Filterd Sportplaces (by form:activity)
             selectedLocationName: '',       // Name of currently selected Location (to display in Typefield)
             locationValidation: undefined,  // To mark Typefield red/green
@@ -70,32 +69,6 @@ export class CreateEventView extends React.Component {
     }
 
     componentWillMount() {
-        // Read possible activities from database
-        /*
-        ActivityService.getActivities().then((data) => {
-            data.sort();    // Alphabetic sort
-            let form = this.state.form;
-            form.activity = data[0];    // Set selected Activity on first in List
-            this.setState({
-                form: form,
-                activities: data
-            });
-        }).catch((e) => {
-            console.error(e);
-            this.setState({
-                error: e
-            });
-        });*/
-
-        // Initialize Activity field
-        let data = ["Select Location first"]
-        let form = this.state.form;
-        form.activity = data[0];
-        this.setState({
-            form: form,
-            activities: data
-        })
-
         // Read Sportplaces from database
         SportPlaceService.getSportPlaces().then((data) => {
             data.sort();
@@ -164,6 +137,7 @@ export class CreateEventView extends React.Component {
         this.setState({ form: form });
     }
 
+    // Changes in Textfield
     handleLocationTextChange(input) {
         let form = this.state.form;
         form.selectedSportPlaceID = '';
@@ -177,6 +151,7 @@ export class CreateEventView extends React.Component {
         });
     }
 
+    // Click in Textfield or Map -> Show Details
     handleLocationSelect(location) {
         this.setState({
             showDetails : true,
@@ -184,6 +159,7 @@ export class CreateEventView extends React.Component {
         });
     }
 
+    // Selection of Location -> Set in Form
     updateLocation(location) {
         let name = location.name;
         let id = location._id;
@@ -377,7 +353,7 @@ export class CreateEventView extends React.Component {
         return (
             <Page>
                 {this.state.showDetails && <LocationDetailsModal location = {this.state.selectedLocation} show={this.state.showDetails}
-                                                              handleClose = {this.hideLocationDetails} selectLocation={this.updateLocation}/>}
+                                                                 handleClose = {this.hideLocationDetails} selectLocation={this.updateLocation}/>}
                 {this.state.info.showInfo && <InfoModal show={this.state.info.showInfo} info={this.state.info.body}
                                                         type={this.state.info.type} handleClose={ () => {this.setModal(false)}} />}
                 <Grid>
