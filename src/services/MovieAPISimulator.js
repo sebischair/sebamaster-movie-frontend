@@ -1064,6 +1064,7 @@ export default class MoviesAPISimulator {
         }
         else {
             window.location = '/#login';
+            return Promise.reject('not authorized');
         }
     };
 
@@ -1086,6 +1087,7 @@ export default class MoviesAPISimulator {
         }
         else {
             window.location = '/#login';
+            return Promise.reject('not authorized');
         }
     };
 
@@ -1107,6 +1109,7 @@ export default class MoviesAPISimulator {
         }
         else {
             window.location = '/#login';
+            return Promise.reject('not authorized');
         }
     };
 
