@@ -32,8 +32,8 @@
     "webpack-merge": "4.1.0"
   },
   "dependencies": {
-    "react": "16.2.0",
-    "react-dom": "16.2.0",
+    "react": "16.8.4",
+    "react-dom": "16.8.4",
     "react-router-dom": "4.2.2",
     "react-md": "1.2.11",
     "webfontloader": "1.6.28",
