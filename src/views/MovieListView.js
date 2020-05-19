@@ -33,23 +33,35 @@ export class MovieListView extends React.Component {
         });
     }
 
-    deleteMovie(id) {
+    async deleteMovie(id) {
         this.setState({
             data: [...this.state.data],
             loading: true
         });
-        MovieService.deleteMovie(id).then((message) => {
 
+        try {
+            let ret = await MovieService.deleteMovie(id);
             let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
             let movies = this.state.data;
             movies.splice(movieIndex, 1);
             this.setState({
-               data: [...movies],
-               loading: false
+                data: [...movies],
+                loading: false
             });
-        }).catch((e) => {
-            console.error(e);
-        });
+        } catch(err) {
+            console.error(err);
+        }
+        // MovieService.deleteMovie(id).then((message) => {
+        //     let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
+        //     let movies = this.state.data;
+        //     movies.splice(movieIndex, 1);
+        //     this.setState({
+        //        data: [...movies],
+        //        loading: false
+        //     });
+        // }).catch((e) => {
+        //     console.error(e);
+        // });
     }
 
     render() {

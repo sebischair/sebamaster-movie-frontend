@@ -7,7 +7,7 @@ export default class MovieService {
     constructor(){
     }
 
-    static baseURL() {return "http://localhost:3000/movies" }
+    static baseURL() {return 'http://localhost:3000/movies' }
 
     static getMovies(){
        return new Promise((resolve, reject) => {

@@ -20,23 +20,40 @@ export class MovieDetailView extends React.Component {
 
         let id = this.props.match.params.id;
 
-        MovieService.getMovie(id).then((data) => {
-            this.setState({
-                movie: data,
-                loading: false
-            });
-        }).catch((e) => {
-            console.error(e);
-        });
+        (async () => {
+            try {
+                let movie = await MovieService.getMovie(id);
+                this.setState({
+                    movie: movie,
+                    loading: false
+                });
+            } catch(err) {
+                console.error(err);
+            }
+        })();
 
+        // MovieService.getMovie(id).then((data) => {
+        //     this.setState({
+        //         movie: data,
+        //         loading: false
+        //     });
+        // }).catch((e) => {
+        //     console.error(e);
+        // });
     }
 
-    deleteMovie(id) {
-        MovieService.deleteMovie(id).then((message) => {
+    async deleteMovie(id) {
+        try {
+            let ret = await MovieService.deleteMovie(id);
             this.props.history.push('/');
-        }).catch((e) => {
-            console.log(e);
-        });
+        } catch(err) {
+            console.error(err);
+        }
+        // MovieService.deleteMovie(id).then((message) => {
+        //     this.props.history.push('/');
+        // }).catch((e) => {
+        //     console.log(e);
+        // });
     }
 
     render() {

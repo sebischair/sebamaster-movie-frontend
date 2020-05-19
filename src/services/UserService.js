@@ -1,13 +1,13 @@
 "use strict";
 
-import HttpService from "./HttpService";
+import HttpService from './HttpService';
 
 export default class UserService {
 
     constructor() {
     }
 
-    static baseURL() {return "http://localhost:3000/auth"; }
+    static baseURL() {return 'http://localhost:3000/auth'; }
 
     static register(user, pass) {
         return new Promise((resolve, reject) => {

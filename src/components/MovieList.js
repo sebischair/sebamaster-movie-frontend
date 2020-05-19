@@ -7,7 +7,7 @@ import { MovieListRow } from './MovieListRow';
 import Page from './Page'
 
 const dataTableStyle = {
-  'margin-bottom': '36px'
+  'marginBottom': '36px'
 };
 
 export const MovieList = ({data, onDelete}) => (
