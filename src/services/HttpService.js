@@ -97,31 +97,6 @@ export default class HttpService {
         } catch(err) {
             onError(err.message);
         }
-        // fetch(url, {
-        //     method: 'PUT',
-        //     headers: header,
-        //     body: JSON.stringify(data)
-        // }).then((resp) => {
-        //     if(this.checkIfUnauthorized(resp)) {
-        //         window.location = '/#login';
-        //         return;
-        //     }
-        //     else {
-        //         return resp.json();
-        //     }
-        // }).then((resp) => {
-        //     if(resp.error) {
-        //         onError(resp.error);
-        //     }
-        //     else {
-        //         if(resp.hasOwnProperty('token')) {
-        //             window.localStorage['jwtToken'] = resp.token;
-        //         }
-        //         onSuccess(resp);
-        //     }
-        // }).catch((e) => {
-        //     onError(e.message);
-        // });
     }
 
     static async post(url, data, onSuccess, onError) {
@@ -159,31 +134,6 @@ export default class HttpService {
         } catch(err) {
             onError(e.message);
         }
-        // fetch(url, {
-        //     method: 'POST',
-        //     headers: header,
-        //     body: JSON.stringify(data)
-        // }).then((resp) => {
-        //     if(this.checkIfUnauthorized(resp)) {
-        //         window.location = "/#login";
-        //         return;
-        //     }
-        //     else {
-        //         return resp.json();
-        //     }
-        // }).then((resp) => {
-        //     if(resp.error) {
-        //         onError(resp.error);
-        //     }
-        //     else {
-        //         if(resp.hasOwnProperty('token')) {
-        //             window.localStorage['jwtToken'] = resp.token;
-        //         }
-        //         onSuccess(resp);
-        //     }
-        // }).catch((e) => {
-        //     onError(e.message);
-        // });
     }
 
     static async remove(url, onSuccess, onError) {
@@ -216,27 +166,6 @@ export default class HttpService {
         } catch(err) {
             onError(err.message);
         }
-        // fetch(url, {
-        //     method: 'DELETE',
-        //     headers: header
-        // }).then((resp) => {
-        //     if(this.checkIfUnauthorized(resp)) {
-        //         window.location = "/#login";
-        //         return;
-        //     }
-        //     else {
-        //         return resp.json();
-        //     }
-        // }).then((resp) => {
-        //     if(resp.error) {
-        //         onError(resp.error);
-        //     }
-        //     else {
-        //         onSuccess(resp)
-        //     }
-        // }).catch((e) => {
-        //     onError(e.message);
-        // });
     }
 
     static checkIfUnauthorized(res) {

@@ -24,14 +24,6 @@ export class UserSignupView extends React.Component {
                 error: err
             });
         }
-        // UserService.register(user.username, user.password).then((data) => {
-        //     this.props.history.push('/');
-        // }).catch((e) => {
-        //     console.error(e);
-        //     this.setState({
-        //         error: e
-        //     });
-        // })
     }
 
     render() {

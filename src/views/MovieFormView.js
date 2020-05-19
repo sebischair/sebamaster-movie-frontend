@@ -57,13 +57,6 @@ export class MovieFormView extends React.Component {
                 console.error(err);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             }
-
-            // MovieService.createMovie(movie).then((data) => {
-            //     this.props.history.push('/');
-            // }).catch((e) => {
-            //     console.error(e);
-            //     this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
-            // });
         } else {
             try {
                 let ret = await MovieService.updateMovie(movie);
@@ -72,12 +65,6 @@ export class MovieFormView extends React.Component {
                 console.error(err);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
             }
-            // MovieService.updateMovie(movie).then((data) => {
-            //     this.props.history.goBack();
-            // }).catch((e) => {
-            //     console.error(e);
-            //     this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
-            // });
         }
     }
 

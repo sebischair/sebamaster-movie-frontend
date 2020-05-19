@@ -24,14 +24,6 @@ export class UserLoginView extends React.Component {
                 error: err
             });
         }
-        // UserService.login(user.username, user.password).then((data) => {
-        //     this.props.history.push('/');
-        // }).catch((e) => {
-        //     console.error(e);
-        //     this.setState({
-        //         error: e
-        //     });
-        // });
     }
 
     render() {

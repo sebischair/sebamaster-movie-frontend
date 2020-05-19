@@ -49,11 +49,6 @@ export class MovieDetailView extends React.Component {
         } catch(err) {
             console.error(err);
         }
-        // MovieService.deleteMovie(id).then((message) => {
-        //     this.props.history.push('/');
-        // }).catch((e) => {
-        //     console.log(e);
-        // });
     }
 
     render() {
