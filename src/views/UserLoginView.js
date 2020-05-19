@@ -14,15 +14,24 @@ export class UserLoginView extends React.Component {
         this.state = {};
     }
 
-    login(user) {
-        UserService.login(user.username, user.password).then((data) => {
+    async login(user) {
+        try {
+            let ret = await UserService.login(user.username, user.password);
             this.props.history.push('/');
-        }).catch((e) => {
-            console.error(e);
+        } catch(err) {
+            console.error(err);
             this.setState({
-                error: e
+                error: err
             });
-        });
+        }
+        // UserService.login(user.username, user.password).then((data) => {
+        //     this.props.history.push('/');
+        // }).catch((e) => {
+        //     console.error(e);
+        //     this.setState({
+        //         error: e
+        //     });
+        // });
     }
 
     render() {

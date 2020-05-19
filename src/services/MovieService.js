@@ -1,6 +1,6 @@
 "use strict";
 
-import MoviesAPISimulator from "./MovieAPISimulator";
+import MoviesAPISimulator from './MovieAPISimulator';
 
 export default class MovieService {
 
@@ -8,64 +8,66 @@ export default class MovieService {
     }
 
     static getMovies(){
-       return new Promise((resolve, reject) => {
-           MoviesAPISimulator.getMoviesAsync().then((resp) => {
+       return new Promise(async (resolve, reject) => {
+           try {
+               let resp = await MoviesAPISimulator.getMoviesAsync();
                if(resp.data != undefined) {
                    resolve(resp.data);
-               }
-               else {
+               } else {
                    reject('Error while retrieving movies');
                }
-               resolve(resp);
-           }).catch((e) => {
-               reject(e);
-           });
+           } catch(err) {
+               reject(err);
+           }
        });
     }
 
     static getMovie(id) {
-        return new Promise((resolve, reject) => {
-            MoviesAPISimulator.getMovieByIdAsync(id).then((resp) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let resp = await MoviesAPISimulator.getMovieByIdAsync(id);
                 if(resp.data != undefined && Object.keys(resp.data).length !== 0) {
                     resolve(resp.data);
                 } else {
                     reject('Error while retrieving movie');
                 }
-            }).catch((e) => {
-                reject(e);
-            });
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 
     static deleteMovie(id) {
-        return new Promise((resolve, reject) => {
-            const token = window.localStorage['jwtToken'];
-            MoviesAPISimulator.deleteMovie(id, token).then((resp) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const token = window.localStorage['jwtToken'];
+                let resp = await MoviesAPISimulator.deleteMovie(id, token);
                 if(resp.status == 200) {
                     resolve(resp.message);
                 }
                 else {
                     reject('Error while deleting movie');
                 }
-            }).catch((e) => {
-                reject(e);
-            });
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 
     static updateMovie(movie) {
-        return new Promise((resolve, reject) => {
-            const token = window.localStorage['jwtToken'];
-            MoviesAPISimulator.updateMovie(movie, token).then((resp) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const token = window.localStorage['jwtToken'];
+                let resp = await MoviesAPISimulator.updateMovie(movie, token);
                 if(resp != undefined && Object.keys(resp).length > 0) {
                     resolve(resp);
                 }
                 else {
                     reject('Error while updating movie');
                 }
-            }).catch((e) => {
-                reject(e);
-            })
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 
@@ -77,18 +79,19 @@ export default class MovieService {
             detailed: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg",
             original: "http://resizing.flixster.com/AeDB8hgaGed_TMCcIF1P_gubGwA=/54x81/dkpu1ddg7pbsk.cloudfront.net/movie/11/27/63/11276344_ori.jpg"
         };
-        return new Promise((resolve, reject) => {
-            const token = window.localStorage['jwtToken'];
-            MoviesAPISimulator.createMovie(movie, token).then((resp) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const token = window.localStorage['jwtToken'];
+                let resp = await MoviesAPISimulator.createMovie(movie, token);
                 if(resp != undefined && Object.keys(resp).length > 0) {
                     resolve(resp);
                 }
                 else {
                     reject('Error while creating movie');
                 }
-            }).catch((e) => {
-               reject(e);
-            });
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 }

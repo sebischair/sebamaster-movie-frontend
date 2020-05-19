@@ -48,21 +48,23 @@ export class MovieFormView extends React.Component {
         }
     }
 
-    updateMovie(movie) {
+    async updateMovie(movie) {
         if(this.state.movie == undefined) {
-            MovieService.createMovie(movie).then((data) => {
+            try {
+                let ret = await MovieService.createMovie(movie);
                 this.props.history.push('/');
-            }).catch((e) => {
-                console.error(e);
+            } catch(err) {
+                console.error(err);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
-            });
+            }
         } else {
-            MovieService.updateMovie(movie).then((data) => {
+            try {
+                let ret = await MovieService.updateMovie(movie);
                 this.props.history.goBack();
-            }).catch((e) => {
-                console.error(e);
+            } catch(err) {
+                console.error(err);
                 this.setState(Object.assign({}, this.state, {error: 'Error while creating movie'}));
-            });
+            }
         }
     }
 

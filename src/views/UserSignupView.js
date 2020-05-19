@@ -14,15 +14,24 @@ export class UserSignupView extends React.Component {
         this.state = {};
     }
 
-    signup(user) {
-        UserService.register(user.username, user.password).then((data) => {
+    async signup(user) {
+        try {
+            let ret = await UserService.register(user.username, user.password);
             this.props.history.push('/');
-        }).catch((e) => {
-            console.error(e);
+        } catch(err) {
+            console.error(err);
             this.setState({
-                error: e
+                error: err
             });
-        })
+        }
+        // UserService.register(user.username, user.password).then((data) => {
+        //     this.props.history.push('/');
+        // }).catch((e) => {
+        //     console.error(e);
+        //     this.setState({
+        //         error: e
+        //     });
+        // })
     }
 
     render() {

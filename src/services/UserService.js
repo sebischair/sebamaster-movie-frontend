@@ -7,11 +7,10 @@ export default class UserService {
     constructor() {
     }
 
-    static baseURL() {return "http://localhost:3000/auth"; }
-
     static register(user, pass) {
-        return new Promise((resolve, reject) => {
-            MovieAPISimulator.register(user, pass).then((resp) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let resp = await MovieAPISimulator.register(user, pass);
                 if(resp != undefined && resp.token != undefined) {
                     window.localStorage['jwtToken'] = resp.token;
                     resolve(resp.token);
@@ -19,15 +18,16 @@ export default class UserService {
                 else {
                     reject('Error while signing up user');
                 }
-            }).catch((e) => {
-               reject(e);
-            });
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 
     static login(user, pass) {
-        return new Promise((resolve, reject) => {
-            MovieAPISimulator.login(user, pass).then((resp) => {
+        return new Promise(async(resolve, reject) => {
+            try {
+                let resp = await MovieAPISimulator.login(user, pass);
                 if(resp != undefined && resp.token != undefined) {
                     window.localStorage['jwtToken'] = resp.token;
                     resolve(resp.token);
@@ -35,9 +35,9 @@ export default class UserService {
                 else {
                     reject('Error while logging in');
                 }
-            }).catch((e) => {
-                reject(e);
-            });
+            } catch(err) {
+                reject(err);
+            }
         });
     }
 

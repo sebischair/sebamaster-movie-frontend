@@ -31,12 +31,13 @@ export class MovieDetailView extends React.Component {
 
     }
 
-    deleteMovie(id) {
-        MovieService.deleteMovie(id).then((message) => {
+    async deleteMovie(id) {
+        try {
+            let ret = await MovieService.deleteMovie(id);
             this.props.history.push('/');
-        }).catch((e) => {
-            console.log(e);
-        });
+        } catch(err) {
+            console.error(err);
+        }
     }
 
     render() {

@@ -1151,7 +1151,6 @@ export default class MoviesAPISimulator {
                     };
 
                     users.push(user);
-
                     let token = jwt.sign({ id: user._id, username: user.username }, JwtSecret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
